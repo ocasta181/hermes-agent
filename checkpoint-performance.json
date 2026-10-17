@@ -1,0 +1,89 @@
+{
+  "platform": "darwin",
+  "payload_MiB": 512,
+  "connections": 8,
+  "comparison": "old PR checkpoint policy versus current policy; successful local HTTP transfers",
+  "baseline_network_module": "current; no errors or retries in this benchmark",
+  "samples": [
+    {
+      "version": "before",
+      "round": 1,
+      "seconds": 0.3639340419904329,
+      "MiB_per_second": 1406.8483321861368,
+      "checkpoints": 16
+    },
+    {
+      "version": "after",
+      "round": 1,
+      "seconds": 0.37694045796524733,
+      "MiB_per_second": 1358.3047114756907,
+      "checkpoints": 1
+    },
+    {
+      "version": "after",
+      "round": 2,
+      "seconds": 0.3691502920119092,
+      "MiB_per_second": 1386.9689692226557,
+      "checkpoints": 1
+    },
+    {
+      "version": "before",
+      "round": 2,
+      "seconds": 0.3401992919971235,
+      "MiB_per_second": 1505.0001926645077,
+      "checkpoints": 10
+    },
+    {
+      "version": "before",
+      "round": 3,
+      "seconds": 0.3599471669876948,
+      "MiB_per_second": 1422.430975870143,
+      "checkpoints": 17
+    },
+    {
+      "version": "after",
+      "round": 3,
+      "seconds": 0.37238220899598673,
+      "MiB_per_second": 1374.931421617723,
+      "checkpoints": 1
+    },
+    {
+      "version": "after",
+      "round": 4,
+      "seconds": 0.38026908301981166,
+      "MiB_per_second": 1346.415006800133,
+      "checkpoints": 1
+    },
+    {
+      "version": "before",
+      "round": 4,
+      "seconds": 0.3644465410034172,
+      "MiB_per_second": 1404.869966910179,
+      "checkpoints": 13
+    },
+    {
+      "version": "before",
+      "round": 5,
+      "seconds": 0.36569795897230506,
+      "MiB_per_second": 1400.0625035995201,
+      "checkpoints": 15
+    },
+    {
+      "version": "after",
+      "round": 5,
+      "seconds": 0.3841878750245087,
+      "MiB_per_second": 1332.6813085065157,
+      "checkpoints": 1
+    }
+  ],
+  "medians": {
+    "before": {
+      "MiB_per_second": 1406.8483321861368,
+      "checkpoints": 15
+    },
+    "after": {
+      "MiB_per_second": 1358.3047114756907,
+      "checkpoints": 1
+    }
+  }
+}
