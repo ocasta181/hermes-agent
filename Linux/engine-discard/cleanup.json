@@ -1,0 +1,23 @@
+[
+  {
+    "sandbox": "/tmp/hermes-e2e-native-engine-discard-0.5192659177557912tgKIns",
+    "stopped": [
+      2593
+    ],
+    "remaining": []
+  },
+  {
+    "sandbox": "/tmp/hermes-e2e-native-engine-discard-0.5192659177557912tgKIns",
+    "stopped": [
+      2996
+    ],
+    "remaining": []
+  },
+  {
+    "sandbox": "/tmp/hermes-e2e-native-engine-discard-0.5192659177557912tgKIns",
+    "stopped": [
+      3366
+    ],
+    "remaining": []
+  }
+]

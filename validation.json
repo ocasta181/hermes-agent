@@ -1,16 +1,5 @@
 {
-  "source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
-  "platform": "macOS darwin-arm64",
-  "backend": "cpu",
-  "resource_controls": {
-    "process_nice": 19,
-    "accelerator_devices": "none",
-    "gpu_layers": 0,
-    "inference_threads": 2,
-    "test_workers": 1,
-    "test_retries": 0,
-    "suite_limit_seconds": 240
-  },
+  "source": "fc38b763271e077e0b87506c6973f7157784580f",
   "model": {
     "repo": "ggml-org/SmolLM2-135M-GGUF",
     "revision": "44686446221a479a9227d7a895cf92930f86de8a",
@@ -20,28 +9,126 @@
   },
   "python": {
     "passed": 115,
-    "wall_seconds": 32.7
+    "wall_seconds": 32.7,
+    "source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4"
   },
   "repository_checks": {
     "passed": 12,
     "blocking": 0,
-    "advisory": 0
+    "advisory": 0,
+    "source": "fc38b763271e077e0b87506c6973f7157784580f"
   },
   "ui": {
-    "engine-pause-resume": "passed, 2.3 minutes",
-    "engine-discard": "passed, 1.7 minutes",
-    "model-resume": "passed, 2.8 minutes"
+    "macOS": {
+      "runtime_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+      "cases": {
+        "engine-pause-resume": "passed, 2.3 minutes",
+        "engine-discard": "passed, 1.7 minutes",
+        "model-resume": "passed, 2.8 minutes"
+      },
+      "final_electron_source": "fc38b763271e077e0b87506c6973f7157784580f",
+      "final_source_engine_pause_resume": "passed, 1.9 minutes",
+      "build_receipt": "macOS-fc38/incremental-build.json"
+    },
+    "Linux": {
+      "runtime_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+      "full_build": "3eefb0db5f8719c6b704dcffa843e472415f1370",
+      "cases": {
+        "engine-pause-resume": {
+          "result": "passed",
+          "duration": "37.0 seconds",
+          "job": "https://github.com/ocasta181/hermes-agent/actions/runs/39096251807/job/117588914984"
+        },
+        "engine-discard": {
+          "result": "passed",
+          "duration": "1.2 minutes",
+          "job": "https://github.com/ocasta181/hermes-agent/actions/runs/39096251807/job/117588914983"
+        },
+        "model-resume": {
+          "result": "passed",
+          "duration": "1.2 minutes",
+          "job": "https://github.com/ocasta181/hermes-agent/actions/runs/39096251807/job/117588914991"
+        }
+      }
+    },
+    "Windows": {
+      "runtime_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+      "electron_source": "fc38b763271e077e0b87506c6973f7157784580f",
+      "cases": {
+        "engine-pause-resume": {
+          "result": "passed",
+          "job": "https://github.com/ocasta181/hermes-agent/actions/runs/39100351113/job/117595176995",
+          "duration": "1.2 minutes"
+        },
+        "engine-discard": {
+          "result": "passed",
+          "duration": "2.7 minutes",
+          "job": "https://github.com/ocasta181/hermes-agent/actions/runs/39099684422/job/117593229474"
+        },
+        "model-resume": {
+          "result": "passed",
+          "duration": "1.5 minutes",
+          "job": "https://github.com/ocasta181/hermes-agent/actions/runs/39099684422/job/117593229439"
+        }
+      }
+    }
   },
-  "native_hosted_run": "https://github.com/ocasta181/hermes-agent/actions/runs/39096251807",
   "screenshots": {
     "screenshots/engine-restored.png": "The engine stage remains paused with Resume after the app and backend restart. API checks verify the saved range coverage.",
     "screenshots/discard-tooltip.png": "The tooltip states that completed files stay. Hash and modification-time checks verify this after Discard and another restart.",
-    "screenshots/model-restored.png": "Resume remains available after a TLS interruption, proxy CONNECT 503 failures, and an app/backend restart. The resumed job completed and produced a real native response."
+    "screenshots/model-restored.png": "Resume remains available after a TLS interruption, proxy CONNECT 503 failures, and an app/backend restart. The resumed job completed and produced a real native response.",
+    "screenshots/macOS-fc38-engine-pause-resume.png": "The current Electron build keeps engine Resume after a real restart; API checks verify retained 1 MiB coverage.",
+    "screenshots/Windows-engine-discard.png": "The Windows UI states which files Discard keeps. Disk checks verify deletion of partial files and unchanged hashes and modification times for two completed files.",
+    "screenshots/Windows-model-resume.png": "Windows keeps Resume after TLS interruption and CONNECT 503 failures; native inference succeeds after Resume.",
+    "screenshots/Windows-engine-pause-resume.png": "Windows restores the paused engine setup after restart; Resume retains saved ranges and completes native inference.",
+    "screenshots/Linux-engine-pause-resume.png": "Linux restores the engine setup and its Resume action after restart.",
+    "screenshots/Linux-engine-discard.png": "Linux shows the Discard explanation; the test verifies partial deletion and completed-file preservation.",
+    "screenshots/Linux-model-resume.png": "Linux keeps Resume after the model TLS interruption and proxy failures, then completes native inference."
   },
   "local_cleanup": "No test sandbox processes remain.",
   "earlier_model_run": {
     "outcome": "150-second deadline reached during native server startup",
     "change": "Raise the test deadline to 210 seconds and the suite limit to 240 seconds",
     "final_result": "Passed in 2.8 minutes with no production change"
+  },
+  "download_runtime_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "electron_tests": {
+    "source": "fc38b763271e077e0b87506c6973f7157784580f",
+    "passed": 8,
+    "test_files": 2,
+    "workers": 1,
+    "wall_seconds": 1.06,
+    "native_windows": {
+      "passed": 6,
+      "skipped": 2,
+      "reason": "The two installed-launcher contracts use POSIX shell scripts."
+    }
+  },
+  "electron_typecheck": {
+    "source": "fc38b763271e077e0b87506c6973f7157784580f",
+    "result": "passed",
+    "wall_seconds": 8.0
+  },
+  "local_resource_controls": {
+    "process_nice": 19,
+    "accelerator_devices": "none",
+    "gpu_layers": 0,
+    "inference_threads": 2,
+    "test_workers": 1,
+    "test_retries": 0,
+    "suite_limit_seconds": 240
+  },
+  "native_hosted_runs": [
+    "https://github.com/ocasta181/hermes-agent/actions/runs/39096251807",
+    "https://github.com/ocasta181/hermes-agent/actions/runs/39099684422",
+    "https://github.com/ocasta181/hermes-agent/actions/runs/39100351113"
+  ],
+  "inference_scope": "Resume is clicked in the packaged UI. The completion probe checks default assignment and calls the actual native engine endpoint; it does not type a chat message in the composer.",
+  "build_method": "build-method.json",
+  "windows_startup": {
+    "baseline": "All three Windows UI cases could not connect on the earlier bundled build.",
+    "cause": "The ticket helper received the CLI launcher instead of the bundled Python interpreter. The actual CLI rejected -P -u with exit 2.",
+    "proof": "Windows/ticket-preflight.json",
+    "fix_commit": "fc38b763271e077e0b87506c6973f7157784580f"
   }
 }

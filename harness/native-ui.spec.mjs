@@ -93,7 +93,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
     writeMockProviderConfig(sandbox.hermesHome, network.origin, undefined,
       `local_runtime:\n  enabled: false\n  backend: ${inputs.backend}\n`)
     writeEnvFile(sandbox.hermesHome, 'e2e-inert-key', network.origin)
-    let app, page
+    let app, page, serverCompleted = false
     const launches = []
     const cleanup = []
     const launch = async () => {
@@ -111,7 +111,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
     const stop = async (final = false) => {
       try {
         if (app) {
-          if (final && page && !page.isClosed()) {
+          if (final && serverCompleted && page && !page.isClosed()) {
             await page.evaluate(() => window.hermesDesktop.api({path:'/api/local-models/server',
               method:'POST',body:{action:'stop'}}))
           }
@@ -199,6 +199,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
         await expect.poll(async () => (await jobs(page)).find(row=>row.job_id===restored.job_id)?.status,
           {timeout:120000,intervals:[500,1000,2000]}).toBe('done')
         const result = probe(env,'complete')
+        serverCompleted = true
         expect(result.model_sha256).toBe(inputs.model_sha256)
         fs.writeFileSync(testInfo.outputPath('native-inference.json'),JSON.stringify(result,null,2))
         await screenshot('completed')

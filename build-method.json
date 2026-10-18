@@ -1,0 +1,8 @@
+{
+  "production_source": "fc38b763271e077e0b87506c6973f7157784580f",
+  "unchanged_python_and_renderer_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "method": "Rebuild the Electron main and preload files from current source. Reuse the complete packaged app with unchanged native dependencies, renderer, and Python payload. Assert the source diff is limited to the three ticket-runtime files. Record output SHA-256 hashes.",
+  "original_mac_full_build": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "original_hosted_full_build": "3eefb0db5f8719c6b704dcffa843e472415f1370",
+  "original_hosted_runtime_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4"
+}

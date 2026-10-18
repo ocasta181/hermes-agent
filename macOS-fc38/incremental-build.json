@@ -1,0 +1,25 @@
+{
+  "electron_source": "fc38b763271e077e0b87506c6973f7157784580f",
+  "unchanged_runtime_source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "original_build": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "scope": [
+    "apps/desktop/electron/main.ts",
+    "apps/desktop/electron/payload-backend.test.ts",
+    "apps/desktop/electron/payload-backend.ts"
+  ],
+  "files": [
+    {
+      "file": "electron-main.mjs",
+      "sha256": "b7943d749d503548e08347432d65772ed0f20fa264dc1f80c45ffb2e28b39726"
+    },
+    {
+      "file": "electron-preload.js",
+      "sha256": "a1c244f30e8dcc7dd5a652c69966c0344755af69e01fc182c44ca76c6449c04f"
+    },
+    {
+      "file": "preview-guest-preload.js",
+      "sha256": "56924d2384877dc851a947a86e38f286a557857aeb47bbdc0c9e22e689e41706"
+    }
+  ],
+  "ticket_imports": "ticket imports ready"
+}

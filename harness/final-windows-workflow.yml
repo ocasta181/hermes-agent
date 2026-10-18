@@ -1,0 +1,64 @@
+name: Native download recovery acceptance
+on:
+  push:
+    branches: ['validation/download-recovery-*']
+permissions:
+  contents: read
+concurrency:
+  group: native-recovery-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+  RECOVERY_SOURCE_COMMIT: 'fc38b763271e077e0b87506c6973f7157784580f'
+defaults:
+  run:
+    shell: bash
+jobs:
+  behavior:
+    name: UI ${{ matrix.case }} (windows-2025)
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        case: [engine-pause-resume]
+    runs-on: windows-2025
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7.0.1
+        with:
+          fetch-depth: 3
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: recovery-ui-v1-Windows-ae113298c1d300d409ce4bfac8b72cb9f43542e4
+          fail-on-cache-miss: true
+          path: |
+            apps/desktop/release
+            node_modules
+            .build/recovery-native-inputs
+            .build/recovery-driver
+      - name: Rebuild Electron from source with the verified runtime unchanged
+        timeout-minutes: 2
+        env:
+          RECOVERY_CASE: ${{ matrix.case }}
+          RECOVERY_SOURCE_ROOT: ${{ github.workspace }}
+          RECOVERY_EVIDENCE_ROOT: ${{ runner.temp }}/recovery-evidence
+        run: |
+          mkdir -p "$RECOVERY_EVIDENCE_ROOT"
+          .build/recovery-driver/node.exe .review/rebuild-electron.mjs 2>&1 | tee "$RECOVERY_EVIDENCE_ROOT/source-build.log"
+      - name: Test one UI recovery case (expected 1–3 minutes)
+        timeout-minutes: 5
+        env:
+          RECOVERY_CASE: ${{ matrix.case }}
+          RECOVERY_SOURCE_ROOT: ${{ github.workspace }}
+          RECOVERY_INPUTS_JSON: ${{ github.workspace }}/.build/recovery-native-inputs/inputs.json
+          RECOVERY_EVIDENCE_ROOT: ${{ runner.temp }}/recovery-evidence
+        run: |
+          .build/recovery-driver/node.exe node_modules/@playwright/test/cli.js test --config .review/playwright.config.mjs --grep "$RECOVERY_CASE\$"
+      - name: Save screenshots, traces, logs, and native response
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: recovery-${{ runner.os }}-${{ matrix.case }}
+          path: ${{ runner.temp }}/recovery-evidence
+          retention-days: 3
+          if-no-files-found: warn

@@ -1,0 +1,408 @@
+{
+  "scenario": "engine-discard",
+  "launches": [
+    {
+      "packaged": true,
+      "executable": "/home/runner/work/hermes-agent/hermes-agent/apps/desktop/release/linux-unpacked/Hermes Agent 3eefb0d",
+      "resources": "/home/runner/work/hermes-agent/hermes-agent/apps/desktop/release/linux-unpacked/resources"
+    },
+    {
+      "packaged": true,
+      "executable": "/home/runner/work/hermes-agent/hermes-agent/apps/desktop/release/linux-unpacked/Hermes Agent 3eefb0d",
+      "resources": "/home/runner/work/hermes-agent/hermes-agent/apps/desktop/release/linux-unpacked/resources"
+    },
+    {
+      "packaged": true,
+      "executable": "/home/runner/work/hermes-agent/hermes-agent/apps/desktop/release/linux-unpacked/Hermes Agent 3eefb0d",
+      "resources": "/home/runner/work/hermes-agent/hermes-agent/apps/desktop/release/linux-unpacked/resources"
+    }
+  ],
+  "before": {
+    "job_id": "dbd24ab2b10a",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Download interrupted. Resume to continue from saved progress",
+    "total_bytes": 17990701,
+    "done_bytes": 1048576,
+    "started_at": 1792298965.1982298,
+    "error": "llamacpp-cpu: install failed: download failed from http://127.0.0.1:40775/engine/0/llama-b11671-bin-ubuntu-x64.tar.gz: HTTP Error 503: Service Unavailable\ndownload failed from https://hermes-assets.nousresearch.com/upstream/sha256/e4120fe6742ce204891496deb95fa49453bdb400ed85807474dbe470f98d45bd: <urlopen error Tunnel connection failed: 503 Service Unavailable> — retry, or run `hermes pm doctor`",
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "http://127.0.0.1:40775/engine/1/libgomp1_12-20220319-1ubuntu1_amd64.deb": [],
+      "http://127.0.0.1:40775/engine/0/llama-b11671-bin-ubuntu-x64.tar.gz": [
+        [
+          2233042,
+          3281618
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 6
+  },
+  "restored": {
+    "job_id": "85197b24262a",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Setup interrupted. Resume to finish setup",
+    "total_bytes": 17990701,
+    "done_bytes": 1048576,
+    "started_at": 1792298997.7911723,
+    "error": null,
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "http://127.0.0.1:40775/engine/1/libgomp1_12-20220319-1ubuntu1_amd64.deb": [],
+      "http://127.0.0.1:40775/engine/0/llama-b11671-bin-ubuntu-x64.tar.gz": [
+        [
+          2233042,
+          3281618
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 6
+  },
+  "requests": [
+    {
+      "index": 0,
+      "start": 2233042,
+      "end": 4466084,
+      "mode": "cut"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2233041,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 4466085,
+      "end": 6699126,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 8932170,
+      "end": 11165212,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 6699127,
+      "end": 8932169,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 13398255,
+      "end": 15631297,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 11165213,
+      "end": 13398254,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 15631298,
+      "end": 17864340,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2233041,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3281618,
+      "end": 17864340,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2233041,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3281618,
+      "end": 17864340,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2233041,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3281618,
+      "end": 17864340,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3281618,
+      "end": 17864340,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2233041,
+      "mode": "blocked"
+    }
+  ],
+  "connects": [
+    {
+      "host": "redirector.gvt1.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "redirector.gvt1.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "fonts.googleapis.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "openrouter.ai",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "portal.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "redirector.gvt1.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "redirector.gvt1.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "fonts.googleapis.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "redirector.gvt1.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "redirector.gvt1.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "fonts.googleapis.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    }
+  ],
+  "completedFiles": [
+    {
+      "file": "/tmp/hermes-e2e-native-engine-discard-0.5192659177557912tgKIns/hermes-home/models/SmolLM2-135M-Q4_K_M.gguf",
+      "hash": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+      "mtime": 1792298947144.5276
+    },
+    {
+      "file": "/tmp/hermes-e2e-native-engine-discard-0.5192659177557912tgKIns/hermes-home/models/completed-keep.gguf",
+      "hash": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+      "mtime": 1792298947720.5393
+    }
+  ],
+  "source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "manifest": {
+    "schema": 1,
+    "target": "linux-x64",
+    "repo": "hermes-agent",
+    "venv": "venv",
+    "store": "tools",
+    "launchers": [
+      "hermes-3eefb0d",
+      "hermes-3eefb0d-agent",
+      "hermes-3eefb0d-acp"
+    ],
+    "runtime": {
+      "repoDir": "hermes-agent",
+      "toolsDir": "tools",
+      "storePython": "tools/python-3.14.7+20260901-linux-x64/bin/python3",
+      "sitePackages": "venv/lib/python3.14/site-packages",
+      "commands": {
+        "hermes": "bin/hermes-3eefb0d",
+        "hermes-agent": "bin/hermes-3eefb0d-agent",
+        "hermes-acp": "bin/hermes-3eefb0d-acp"
+      }
+    },
+    "ref": "3eefb0db5f8719c6b704dcffa843e472415f1370"
+  }
+}

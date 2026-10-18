@@ -1,0 +1,16 @@
+{
+  "variant": "SmolLM2-135M-Q4_K_M",
+  "provider": "llamacpp",
+  "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+  "engine": "/tmp/hermes-e2e-native-model-resume-0.782685306599764896YspY/hermes-home/tools/llamacpp-cpu-11671-linux-x64/llama-server",
+  "tag": "b11671",
+  "response": " little girl named Lily who lived in a",
+  "usage": {
+    "completion_tokens": 8,
+    "prompt_tokens": 7,
+    "total_tokens": 15,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "variant": "SmolLM2-135M-Q4_K_M",
+  "provider": "llamacpp",
+  "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+  "engine": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\hermes-e2e-native-model-resume-0.45551805827235925wk155H\\hermes-home\\tools\\llamacpp-cpu-11671-win32-x64\\llama-server.exe",
+  "tag": "b11671",
+  "backend": "cpu",
+  "response": " little girl named Lily who lived in a",
+  "usage": {
+    "completion_tokens": 8,
+    "prompt_tokens": 7,
+    "total_tokens": 15,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  }
+}

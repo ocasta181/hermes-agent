@@ -1,0 +1,663 @@
+{
+  "scenario": "model-resume",
+  "launches": [
+    {
+      "packaged": true,
+      "executable": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\hermes-3eefb0d.exe",
+      "resources": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\resources"
+    },
+    {
+      "packaged": true,
+      "executable": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\hermes-3eefb0d.exe",
+      "resources": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\resources"
+    }
+  ],
+  "before": {
+    "job_id": "e47c1439c1ca",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Download interrupted. Resume to continue from saved progress",
+    "total_bytes": 101016128,
+    "done_bytes": 9950164,
+    "started_at": 1792300866.3964508,
+    "error": "download failed from https://huggingface.co/ggml-org/SmolLM2-135M-GGUF/resolve/44686446221a479a9227d7a895cf92930f86de8a/SmolLM2-135M-Q4_K_M.gguf: <urlopen error Tunnel connection failed: 503 Service Unavailable>",
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\hermes-e2e-native-model-resume-0.45551805827235925wk155H\\hermes-home\\models\\SmolLM2-135M-Q4_K_M.gguf": [
+        [
+          0,
+          1048576
+        ],
+        [
+          12627016,
+          14188572
+        ],
+        [
+          25254032,
+          26302608
+        ],
+        [
+          37881048,
+          39978200
+        ],
+        [
+          50508064,
+          51556640
+        ],
+        [
+          63135080,
+          64183656
+        ],
+        [
+          75762096,
+          76810672
+        ],
+        [
+          88389112,
+          89437688
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 10
+  },
+  "restored": {
+    "job_id": "301e68f251d2",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Setup interrupted. Resume to finish setup",
+    "total_bytes": 101016128,
+    "done_bytes": 9950164,
+    "started_at": 1792300906.0852017,
+    "error": null,
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\hermes-e2e-native-model-resume-0.45551805827235925wk155H\\hermes-home\\models\\SmolLM2-135M-Q4_K_M.gguf": [
+        [
+          0,
+          1048576
+        ],
+        [
+          12627016,
+          14188572
+        ],
+        [
+          25254032,
+          26302608
+        ],
+        [
+          37881048,
+          39978200
+        ],
+        [
+          50508064,
+          51556640
+        ],
+        [
+          63135080,
+          64183656
+        ],
+        [
+          75762096,
+          76810672
+        ],
+        [
+          88389112,
+          89437688
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 10
+  },
+  "requests": [
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2443866,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 2443867,
+      "end": 4887733,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 4887734,
+      "end": 7331600,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 7331601,
+      "end": 9775468,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 12219336,
+      "end": 14663202,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 9775469,
+      "end": 12219335,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 14663203,
+      "end": 17107069,
+      "mode": "healthy"
+    },
+    {
+      "index": 0,
+      "start": 17107070,
+      "end": 19550937,
+      "mode": "healthy"
+    }
+  ],
+  "connects": [
+    {
+      "host": "models.dev",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "cut",
+      "allowed": false
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "cut",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "openrouter.ai",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "portal.nousresearch.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "blocked",
+      "allowed": true
+    },
+    {
+      "host": "models.dev",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "blocked",
+      "allowed": false
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    }
+  ],
+  "completedFiles": [],
+  "source": "fc38b763271e077e0b87506c6973f7157784580f",
+  "manifest": {
+    "schema": 1,
+    "target": "win32-x64",
+    "repo": "hermes-agent",
+    "venv": "venv",
+    "store": "tools",
+    "launchers": [
+      "hermes-3eefb0d",
+      "hermes-3eefb0d-agent",
+      "hermes-3eefb0d-acp"
+    ],
+    "runtime": {
+      "repoDir": "hermes-agent",
+      "toolsDir": "tools",
+      "storePython": "tools/python-3.14.7+20260901-win32-x64/python.exe",
+      "sitePackages": "venv/Lib/site-packages",
+      "commands": {
+        "hermes": "bin/hermes-3eefb0d.exe",
+        "hermes-agent": "bin/hermes-3eefb0d-agent.exe",
+        "hermes-acp": "bin/hermes-3eefb0d-acp.exe"
+      }
+    },
+    "ref": "3eefb0db5f8719c6b704dcffa843e472415f1370"
+  }
+}

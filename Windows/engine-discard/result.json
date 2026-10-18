@@ -1,0 +1,336 @@
+{
+  "scenario": "engine-discard",
+  "launches": [
+    {
+      "packaged": true,
+      "executable": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\hermes-3eefb0d.exe",
+      "resources": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\resources"
+    },
+    {
+      "packaged": true,
+      "executable": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\hermes-3eefb0d.exe",
+      "resources": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\resources"
+    },
+    {
+      "packaged": true,
+      "executable": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\hermes-3eefb0d.exe",
+      "resources": "D:\\a\\hermes-agent\\hermes-agent\\apps\\desktop\\release\\win-unpacked\\resources"
+    }
+  ],
+  "before": {
+    "job_id": "db3400f10099",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Download interrupted. Resume to continue from saved progress",
+    "total_bytes": 19550938,
+    "done_bytes": 1048576,
+    "started_at": 1792300575.3353531,
+    "error": "llamacpp-cpu: install failed: download failed from http://127.0.0.1:60558/engine/0/llama-b11671-bin-win-cpu-x64.zip: HTTP Error 503: Service Unavailable\ndownload failed from https://hermes-assets.nousresearch.com/upstream/sha256/a9a407979a351add66016ffb558a53de8b6655fed1eec362591d66ea671fec81: <urlopen error Tunnel connection failed: 503 Service Unavailable> — retry, or run `hermes pm doctor`",
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "http://127.0.0.1:60558/engine/0/llama-b11671-bin-win-cpu-x64.zip": [
+        [
+          2443867,
+          3492443
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 5
+  },
+  "restored": {
+    "job_id": "515c155885c4",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Setup interrupted. Resume to finish setup",
+    "total_bytes": 19550938,
+    "done_bytes": 1048576,
+    "started_at": 1792300633.8717852,
+    "error": null,
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "http://127.0.0.1:60558/engine/0/llama-b11671-bin-win-cpu-x64.zip": [
+        [
+          2443867,
+          3492443
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 5
+  },
+  "requests": [
+    {
+      "index": 0,
+      "start": 2443867,
+      "end": 4887733,
+      "mode": "cut"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2443866,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 4887734,
+      "end": 7331600,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 7331601,
+      "end": 9775468,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 9775469,
+      "end": 12219335,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 12219336,
+      "end": 14663202,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 14663203,
+      "end": 17107069,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 17107070,
+      "end": 19550937,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2443866,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3492443,
+      "end": 19550937,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2443866,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3492443,
+      "end": 19550937,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3492443,
+      "end": 19550937,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2443866,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 0,
+      "end": 2443866,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3492443,
+      "end": 19550937,
+      "mode": "blocked"
+    }
+  ],
+  "connects": [
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "openrouter.ai",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "portal.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-assets.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    }
+  ],
+  "completedFiles": [
+    {
+      "file": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\hermes-e2e-native-engine-discard-0.8029109790452488j2xfNU\\hermes-home\\models\\SmolLM2-135M-Q4_K_M.gguf",
+      "hash": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+      "mtime": 1792298524007.0125
+    },
+    {
+      "file": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\hermes-e2e-native-engine-discard-0.8029109790452488j2xfNU\\hermes-home\\models\\completed-keep.gguf",
+      "hash": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+      "mtime": 1792298524007.0125
+    }
+  ],
+  "source": "fc38b763271e077e0b87506c6973f7157784580f",
+  "manifest": {
+    "schema": 1,
+    "target": "win32-x64",
+    "repo": "hermes-agent",
+    "venv": "venv",
+    "store": "tools",
+    "launchers": [
+      "hermes-3eefb0d",
+      "hermes-3eefb0d-agent",
+      "hermes-3eefb0d-acp"
+    ],
+    "runtime": {
+      "repoDir": "hermes-agent",
+      "toolsDir": "tools",
+      "storePython": "tools/python-3.14.7+20260901-win32-x64/python.exe",
+      "sitePackages": "venv/Lib/site-packages",
+      "commands": {
+        "hermes": "bin/hermes-3eefb0d.exe",
+        "hermes-agent": "bin/hermes-3eefb0d-agent.exe",
+        "hermes-acp": "bin/hermes-3eefb0d-acp.exe"
+      }
+    },
+    "ref": "3eefb0db5f8719c6b704dcffa843e472415f1370"
+  }
+}

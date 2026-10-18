@@ -1,0 +1,16 @@
+[
+  {
+    "sandbox": "/tmp/hermes-e2e-native-engine-pause-resume-0.3940600477706283DVdvi1",
+    "stopped": [
+      2621
+    ],
+    "remaining": []
+  },
+  {
+    "sandbox": "/tmp/hermes-e2e-native-engine-pause-resume-0.3940600477706283DVdvi1",
+    "stopped": [
+      3008
+    ],
+    "remaining": []
+  }
+]

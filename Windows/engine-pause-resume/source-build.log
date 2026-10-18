@@ -1,0 +1,23 @@
+
+  .build\recovery-electron-source\electron-main.mjs  2.9mb
+
+Done in 486ms
+
+  .build\recovery-electron-source\electron-preload.js  43.5kb
+
+Done in 100ms
+
+  .build\recovery-electron-source\preview-guest-preload.js  962b 
+
+Done in 2ms
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mD:/a/hermes-agent/hermes-agent[39m
+
+ [32m✓[39m apps/desktop/electron/payload-backend.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m apps/desktop/electron/local-gateway-python-runtime.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[32m 8[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m6 passed[39m[22m[2m | [22m[33m2 skipped[39m[90m (8)[39m
+[2m   Start at [22m 05:25:07
+[2m   Duration [22m 489ms[2m (transform 79ms, setup 0ms, import 113ms, tests 52ms, environment 0ms)[22m
+
