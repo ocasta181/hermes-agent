@@ -25,6 +25,8 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7.0.1
+        with:
+          fetch-depth: 3
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: recovery-ui-v1-Windows-ae113298c1d300d409ce4bfac8b72cb9f43542e4
