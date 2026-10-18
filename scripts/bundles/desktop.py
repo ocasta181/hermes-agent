@@ -98,7 +98,7 @@ def _build_prepared(prepared, builder_args: list[str], variant: str | None) -> N
     desktop = repo / "apps/desktop"
     targets = {"win32": ["--win", "msix"], "darwin": ["--mac", "dmg", "zip"], "linux": ["--linux", "AppImage"]}[sys.platform]
     if "--dir" in builder_args:
-        targets = [targets[0], "dir"]
+        targets = targets[:1]
     package_args = ["--prepared", str(prepared.packager), "--native-deps", str(prepared.native),
                     *targets, f"-c.extraMetadata.version={request.version}"]
     run([node, "scripts/run-electron-builder.mjs", "--validate-only", *package_args, *builder_args],

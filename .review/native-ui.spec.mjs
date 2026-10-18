@@ -87,7 +87,8 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
         'HERMES_PYTHON', 'PYTHONPATH', 'PYTHONHOME', 'HERMES_INSTALL_ROOT'].includes(key)) delete env[key]
     }
     fs.mkdirSync(env.APPDATA,{recursive:true}); fs.mkdirSync(env.LOCALAPPDATA,{recursive:true})
-    writeMockProviderConfig(sandbox.hermesHome, network.origin)
+    writeMockProviderConfig(sandbox.hermesHome, network.origin, undefined,
+      `local_runtime:\n  enabled: false\n  backend: ${inputs.backend}\n`)
     writeEnvFile(sandbox.hermesHome, 'e2e-inert-key', network.origin)
     let app, page
     const launches = []

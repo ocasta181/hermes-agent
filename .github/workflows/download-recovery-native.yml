@@ -4,6 +4,9 @@ on:
     branches: ['validation/download-recovery-*']
 permissions:
   contents: read
+concurrency:
+  group: native-recovery-${{ github.ref }}
+  cancel-in-progress: true
 env:
   CSC_IDENTITY_AUTO_DISCOVERY: 'false'
   RECOVERY_SOURCE_COMMIT: 'ae113298c1d300d409ce4bfac8b72cb9f43542e4'

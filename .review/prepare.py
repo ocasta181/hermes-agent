@@ -18,13 +18,14 @@ def main():
     parser.add_argument('--source', type=Path, required=True)
     parser.add_argument('--payload', type=Path, required=True)
     parser.add_argument('--inputs', type=Path, required=True)
+    parser.add_argument('--backend', choices=['native', 'cpu'], default='native')
     args = parser.parse_args()
     sys.path.insert(0, str(args.source))
     from pm.downloader import Download, Source
     from pm.artifact_mirror import mirror_url
 
     args.inputs.mkdir(parents=True, exist_ok=True)
-    package = 'llamacpp-metal' if sys.platform == 'darwin' else 'llamacpp-cpu'
+    package = 'llamacpp-metal' if sys.platform == 'darwin' and args.backend == 'native' else 'llamacpp-cpu'
     facts = json.loads((args.payload/'tools/facts.json').read_text())
     fact = facts['packages'][package]
     lock_path = args.payload/'hermes-agent/pm/lock.json'
@@ -44,7 +45,7 @@ def main():
                      model, MODEL_SHA)], partials_dir=args.inputs/'partials').run()
     assert hashlib.sha256(model.read_bytes()).hexdigest() == MODEL_SHA
     manifest = json.loads((args.payload/'manifest.json').read_text())
-    result = {'package':package, 'backend':'metal' if sys.platform == 'darwin' else 'cpu',
+    result = {'package':package, 'backend':'metal' if package == 'llamacpp-metal' else 'cpu',
               'entry':fact['entry'], 'target':fact['target'], 'artifacts':archives,
               'model':str(model), 'model_file':MODEL_FILE, 'model_sha256':MODEL_SHA,
               'model_repo':MODEL_REPO, 'model_revision':MODEL_REV,
