@@ -1,0 +1,47 @@
+{
+  "source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "platform": "macOS darwin-arm64",
+  "backend": "cpu",
+  "resource_controls": {
+    "process_nice": 19,
+    "accelerator_devices": "none",
+    "gpu_layers": 0,
+    "inference_threads": 2,
+    "test_workers": 1,
+    "test_retries": 0,
+    "suite_limit_seconds": 240
+  },
+  "model": {
+    "repo": "ggml-org/SmolLM2-135M-GGUF",
+    "revision": "44686446221a479a9227d7a895cf92930f86de8a",
+    "file": "SmolLM2-135M-Q4_K_M.gguf",
+    "bytes": 101016128,
+    "sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5"
+  },
+  "python": {
+    "passed": 115,
+    "wall_seconds": 32.7
+  },
+  "repository_checks": {
+    "passed": 12,
+    "blocking": 0,
+    "advisory": 0
+  },
+  "ui": {
+    "engine-pause-resume": "passed, 2.3 minutes",
+    "engine-discard": "passed, 1.7 minutes",
+    "model-resume": "passed, 2.8 minutes"
+  },
+  "native_hosted_run": "https://github.com/ocasta181/hermes-agent/actions/runs/39096251807",
+  "screenshots": {
+    "screenshots/engine-restored.png": "The engine stage remains paused with Resume after the app and backend restart. API checks verify the saved range coverage.",
+    "screenshots/discard-tooltip.png": "The tooltip states that completed files stay. Hash and modification-time checks verify this after Discard and another restart.",
+    "screenshots/model-restored.png": "Resume remains available after a TLS interruption, proxy CONNECT 503 failures, and an app/backend restart. The resumed job completed and produced a real native response."
+  },
+  "local_cleanup": "No test sandbox processes remain.",
+  "earlier_model_run": {
+    "outcome": "150-second deadline reached during native server startup",
+    "change": "Raise the test deadline to 210 seconds and the suite limit to 240 seconds",
+    "final_result": "Passed in 2.8 minutes with no production change"
+  }
+}

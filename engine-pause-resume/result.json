@@ -1,0 +1,369 @@
+{
+  "scenario": "engine-pause-resume",
+  "launches": [
+    {
+      "packaged": true,
+      "executable": "/Users/andrin/Code/hermes-download-recovery/.build/recovery-review/native-app/Hermes Agent ae11329.app/Contents/MacOS/Hermes Agent ae11329",
+      "resources": "/Users/andrin/Code/hermes-download-recovery/.build/recovery-review/native-app/Hermes Agent ae11329.app/Contents/Resources"
+    },
+    {
+      "packaged": true,
+      "executable": "/Users/andrin/Code/hermes-download-recovery/.build/recovery-review/native-app/Hermes Agent ae11329.app/Contents/MacOS/Hermes Agent ae11329",
+      "resources": "/Users/andrin/Code/hermes-download-recovery/.build/recovery-review/native-app/Hermes Agent ae11329.app/Contents/Resources"
+    }
+  ],
+  "before": {
+    "job_id": "536f2ae4ea6b",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "downloading-runtime",
+    "detail": "Downloading the local engine",
+    "total_bytes": 12201717,
+    "done_bytes": 1048576,
+    "started_at": 1792297005.0463371,
+    "error": null,
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "http://127.0.0.1:60142/engine/0/llama-b11671-bin-macos-arm64.tar.gz": [
+        [
+          0,
+          1048576
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 9
+  },
+  "restored": {
+    "job_id": "c3a4d3264dd1",
+    "kind": "quickstart",
+    "target": "Recovery test model",
+    "model_id": "recovery-tiny",
+    "status": "paused",
+    "phase": "interrupted",
+    "detail": "Setup interrupted. Resume to finish setup",
+    "total_bytes": 12201717,
+    "done_bytes": 1048576,
+    "started_at": 1792297020.074573,
+    "error": null,
+    "plan_key": "f9ab65222a9ca6ade5e3120947d331fc929626f35055158b238dc02da4ea1dce",
+    "ranges": {
+      "http://127.0.0.1:60142/engine/0/llama-b11671-bin-macos-arm64.tar.gz": [
+        [
+          0,
+          1048576
+        ]
+      ]
+    },
+    "pause_requested": false,
+    "can_pause": false,
+    "can_resume": true,
+    "can_discard": true,
+    "percent": 9
+  },
+  "requests": [
+    {
+      "index": 0,
+      "start": 0,
+      "end": 1525213,
+      "mode": "cut"
+    },
+    {
+      "index": 0,
+      "start": 6100858,
+      "end": 7626072,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 4575643,
+      "end": 6100857,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 1525214,
+      "end": 3050428,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 3050429,
+      "end": 4575642,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 9151287,
+      "end": 10676501,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 7626073,
+      "end": 9151286,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 10676502,
+      "end": 12201716,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 1048576,
+      "end": 12201716,
+      "mode": "blocked"
+    },
+    {
+      "index": 0,
+      "start": 1048576,
+      "end": 12201716,
+      "mode": "healthy"
+    }
+  ],
+  "connects": [
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "models.dev",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "openrouter.ai",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "portal.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "huggingface.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "us.aws.cdn.hf.co",
+      "mode": "healthy",
+      "allowed": true
+    },
+    {
+      "host": "hermes-agent.nousresearch.com",
+      "mode": "healthy",
+      "allowed": false
+    },
+    {
+      "host": "raw.githubusercontent.com",
+      "mode": "healthy",
+      "allowed": false
+    }
+  ],
+  "completedFiles": [],
+  "source": "ae113298c1d300d409ce4bfac8b72cb9f43542e4",
+  "manifest": {
+    "schema": 1,
+    "target": "darwin-arm64",
+    "repo": "hermes-agent",
+    "venv": "venv",
+    "store": "tools",
+    "launchers": [
+      "hermes-ae11329",
+      "hermes-ae11329-agent",
+      "hermes-ae11329-acp"
+    ],
+    "runtime": {
+      "repoDir": "hermes-agent",
+      "toolsDir": "tools",
+      "storePython": "tools/python-3.14.7+20260901-darwin-arm64/bin/python3",
+      "sitePackages": "venv/lib/python3.14/site-packages",
+      "commands": {
+        "hermes": "bin/hermes-ae11329",
+        "hermes-agent": "bin/hermes-ae11329-agent",
+        "hermes-acp": "bin/hermes-ae11329-acp"
+      }
+    },
+    "ref": "ae113298c1d300d409ce4bfac8b72cb9f43542e4"
+  }
+}

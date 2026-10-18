@@ -1,0 +1,23 @@
+[
+  {
+    "sandbox": "/private/var/folders/95/8lc1s_214qb1m_5_9t0wdbwh0000gn/T/hermes-e2e-native-engine-discard-0.8929836171401015namurz",
+    "stopped": [
+      23118
+    ],
+    "remaining": []
+  },
+  {
+    "sandbox": "/private/var/folders/95/8lc1s_214qb1m_5_9t0wdbwh0000gn/T/hermes-e2e-native-engine-discard-0.8929836171401015namurz",
+    "stopped": [
+      23366
+    ],
+    "remaining": []
+  },
+  {
+    "sandbox": "/private/var/folders/95/8lc1s_214qb1m_5_9t0wdbwh0000gn/T/hermes-e2e-native-engine-discard-0.8929836171401015namurz",
+    "stopped": [
+      23505
+    ],
+    "remaining": []
+  }
+]

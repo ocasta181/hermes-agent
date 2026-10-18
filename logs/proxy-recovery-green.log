@@ -1,0 +1,30 @@
+▶ not activated — using HERMES_PYTHON: /Users/andrin/Code/.hermes-download-dev/test-env/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 7 test files (~35 tests) under ['tests/pm/test_proxy_recovery.py', 'tests/pm/test_network.py', 'tests/pm/test_network_retries.py', 'tests/pm/test_downloader.py', 'tests/pm/test_downloader_integrity.py', 'tests/hermes_cli/test_local_setup_restart.py', 'tests/hermes_cli/test_local_engine_download_recovery.py']; running with -j 18
+[  2.9% |     1/~35 | ✓2 | ✗0] ✓ tests/pm/test_proxy_recovery.py (2✓, 1.9s)
+[ 17.1% |     6/~35 | ✓48 | ✗ 0] ✓ tests/pm/test_network.py (46✓, 3.6s)
+[ 22.9% |     8/~35 | ✓57 | ✗ 0] ✓ tests/hermes_cli/test_local_engine_download_recovery.py (9✓, 10.0s)
+[ 37.1% |    13/~35 | ✓70 | ✗ 0] ✓ tests/pm/test_downloader_integrity.py (13✓, 11.5s)
+[ 45.7% |    16/~35 | ✓80 | ✗ 0] ✓ tests/hermes_cli/test_local_setup_restart.py (10✓, 23.7s)
+[ 51.4% |    18/~35 | ✓96 | ✗ 0] ✓ tests/pm/test_network_retries.py (16✓, 25.6s)
+[100.0% |    35/~35 | ✓115 | ✗  0] ✓ tests/pm/test_downloader.py (19✓, 32.7s)
+
+=== Summary: 7 files, 115 tests passed, 0 failed (100% complete) in 32.7s (18 workers) ===
+  Durations cached to test_durations.json (7 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   7
+  Total subprocess CPU-wall: 109.0s  (runner wall: 32.7s, parallelism: 18x)
+  P50: 11.49s  P90: 32.65s  P95: 32.65s  P99: 32.65s  Max: 32.65s
+  <1s: 0 files (0%)  <2s: 1 files (14%)
+  Top 10 slowest:
+     32.65s  tests/pm/test_downloader.py
+     25.59s  tests/pm/test_network_retries.py
+     23.68s  tests/hermes_cli/test_local_setup_restart.py
+     11.49s  tests/pm/test_downloader_integrity.py
+     10.02s  tests/hermes_cli/test_local_engine_download_recovery.py
+      3.61s  tests/pm/test_network.py
+      1.95s  tests/pm/test_proxy_recovery.py
