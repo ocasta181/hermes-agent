@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict'
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 
 import { test, vi } from 'vitest'
 
 import type { InstallStamp, PayloadRuntime } from './install-stamp'
-import { bundledPayload, installIdForRoot, payloadPythonPath } from './payload-backend'
+import { bundledPayload, installIdForRoot, payloadPythonPath, payloadTicketRuntime } from './payload-backend'
 
 function stamp(runtime: PayloadRuntime, payload: InstallStamp['payload'] = 'bundled'): InstallStamp {
   return {
@@ -86,4 +88,33 @@ test('bundled core code precedes the dependencies, as the bin launchers order th
     payloadPythonPath({ repoDir: 'payload/hermes-agent', sitePackages: 'payload/venv/site-packages' }),
     ['payload/hermes-agent', 'payload/venv/site-packages'].join(path.delimiter)
   )
+})
+
+test('bundled ticket code runs in the declared interpreter with its own import roots', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'payload-ticket-'))
+  const repo = path.join(root, 'repo')
+  const site = path.join(root, 'dependencies')
+  fs.mkdirSync(repo)
+  fs.mkdirSync(site)
+  fs.writeFileSync(path.join(repo, 'ticket_owner.py'), 'value = "payload"')
+  fs.writeFileSync(path.join(site, 'ticket_owner.py'), 'value = "stale"')
+  fs.writeFileSync(path.join(site, 'ticket_dependency.py'), 'value = "dependency"')
+
+  try {
+    const backend = { command: process.execPath, env: { PYTHONPATH: '/foreign-install', PYTHONHOME: '' } }
+
+    assert.equal(payloadTicketRuntime(backend, null), backend)
+
+    const runtime = payloadTicketRuntime(backend, { root, repoDir: repo, sitePackages: site, toolsDir: root,
+      storePython: process.env.HERMES_PYTHON || (process.platform === 'win32' ? 'python' : 'python3'),
+      commands: { hermes: process.execPath }, shim: process.execPath })
+
+    const output = execFileSync(runtime.command, ['-P', '-c',
+      'import ticket_owner, ticket_dependency; print(ticket_owner.value, ticket_dependency.value)'],
+    { env: { ...process.env, ...runtime.env }, encoding: 'utf8', timeout: 10_000 })
+
+    assert.equal(output.trim(), 'payload dependency')
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
 })

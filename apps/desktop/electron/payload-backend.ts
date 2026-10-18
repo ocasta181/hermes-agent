@@ -46,6 +46,14 @@ export function payloadPythonPath(payload: Pick<PayloadInfo, 'repoDir' | 'sitePa
   return [payload.repoDir, payload.sitePackages].join(path.delimiter)
 }
 
+/** Ticket helpers execute Python code; the payload's CLI launcher accepts CLI arguments. */
+export function payloadTicketRuntime<T extends { env?: NodeJS.ProcessEnv }>(backend: T, payload: PayloadInfo | null) {
+  if (!payload) {return backend}
+
+  return { kind: 'python', command: payload.storePython,
+    env: { ...backend.env, PYTHONPATH: payloadPythonPath(payload) } }
+}
+
 // ─── update channel ─────────────────────────────────────────────────────────
 //
 // The CLI owns the channel records; Electron only reads the install id for
