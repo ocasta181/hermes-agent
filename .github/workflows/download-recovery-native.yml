@@ -1,0 +1,49 @@
+name: Native download recovery acceptance
+on:
+  push:
+    branches: ['validation/download-recovery-*']
+permissions:
+  contents: read
+jobs:
+  packaged-ui:
+    name: Packaged UI (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 100
+    defaults:
+      run:
+        shell: bash
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      RECOVERY_SOURCE_COMMIT: 'ae113298c1d300d409ce4bfac8b72cb9f43542e4'
+    steps:
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7.0.1
+      - uses: ./.github/actions/setup-pm
+        id: pm
+        with:
+          toolchain: all
+          extras: '[]'
+          test-environment: 'true'
+      - name: Install display dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1
+      - name: Recovery behavior tests
+        run: scripts/run_tests.sh tests/pm/test_proxy_recovery.py tests/hermes_cli/test_local_setup_restart.py tests/hermes_cli/test_local_download_recovery.py tests/hermes_cli/test_local_engine_download_recovery.py
+      - name: Build the full bundled app from this commit
+        run: |
+          mkdir -p "$RUNNER_TEMP/recovery-evidence"
+          "$HERMES_PYTHON" scripts/bundles/desktop.py --commit "$GITHUB_SHA" --variant bundled -- --dir --publish never 2>&1 | tee "$RUNNER_TEMP/recovery-evidence/build.log"
+      - name: Click through recovery in the packaged app
+        run: |
+          "$HERMES_PYTHON" .review/run.py --source "$GITHUB_WORKSPACE" --evidence "$RUNNER_TEMP/recovery-evidence" --inputs "$RUNNER_TEMP/recovery-inputs" 2>&1 | tee "$RUNNER_TEMP/recovery-evidence/ui.log"
+      - name: Save screenshots, traces, logs, and native response
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: recovery-${{ runner.os }}-${{ runner.arch }}
+          path: ${{ runner.temp }}/recovery-evidence
+          retention-days: 3
+          if-no-files-found: warn
