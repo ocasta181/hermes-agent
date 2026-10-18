@@ -1,0 +1,33 @@
+{
+  "pausedBytes": 1048576,
+  "installedHashMatches": true,
+  "completedFilesUnchanged": true,
+  "resumeRequests": [
+    {
+      "path": "/engine.zip",
+      "start": 1048576,
+      "end": 7340149,
+      "outage": false
+    }
+  ],
+  "setupEvents": "server\ndefault\n",
+  "workerPid": 59517,
+  "discardedPartials": [],
+  "completedAfterDiscard": true,
+  "manualPauseDiscardFiles": [],
+  "final": {
+    "status": "done",
+    "pausedBytes": 1048576,
+    "hashMatches": true,
+    "requests": [
+      {
+        "path": "/engine.zip",
+        "start": 1048576,
+        "end": 7340149,
+        "outage": false
+      }
+    ],
+    "workerPid": 60935,
+    "completedUnchanged": true
+  }
+}
