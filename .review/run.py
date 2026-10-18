@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import signal
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--source', type=Path, required=True)
@@ -26,4 +27,27 @@ command = ['node', str(args.source/'node_modules/@playwright/test/cli.js'),
     'test', '--config', str(here/'playwright.config.mjs'), '--grep', args.case + '$']
 if sys.platform.startswith('linux'):
     command = ['xvfb-run','-a',*command]
-sys.exit(subprocess.run(command, cwd=args.source, env=env, timeout=240).returncode)
+process = subprocess.Popen(command, cwd=args.source, env=env, start_new_session=os.name != 'nt')
+try:
+    result = process.wait(timeout=260)
+except subprocess.TimeoutExpired:
+    if os.name != 'nt':
+        os.killpg(process.pid, signal.SIGTERM)
+    else:
+        process.terminate()
+    process.wait(timeout=10)
+    result = 124
+finally:
+    payload = Path(package['payload'])
+    runtime = json.loads((payload/'manifest.json').read_text())['runtime']
+    prelude = f'import sys,site,runpy;sys.path.insert(0,{str(payload/runtime["repoDir"])!r});site.addsitedir({str(payload/runtime["sitePackages"])!r});'
+    for receipt in args.evidence.glob('results/**/sandbox.json'):
+        sandbox = json.loads(receipt.read_text())
+        clean_env = dict(env, HOME=sandbox['root'], HERMES_HOME=sandbox['hermesHome'])
+        cleanup = subprocess.run([str(payload/runtime['storePython']), '-I', '-S', '-B', '-c',
+            prelude+f'runpy.run_path({str(here/"cleanup.py")!r},run_name="__main__")'],
+            env=clean_env, capture_output=True, text=True, timeout=20)
+        receipt.with_name('outer-cleanup.log').write_text(cleanup.stdout+cleanup.stderr)
+        if cleanup.returncode:
+            result = 1
+sys.exit(result)

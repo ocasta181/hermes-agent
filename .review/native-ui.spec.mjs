@@ -22,6 +22,7 @@ const enginePaths = inputs.engine_entries.map(entry=>path.join(packaged.payload,
 const originalCatalog = fs.readFileSync(catalogPath)
 const originalLock = fs.readFileSync(lockPath)
 const manifest = JSON.parse(fs.readFileSync(path.join(packaged.payload,'manifest.json'),'utf8'))
+if (process.env.RECOVERY_EXPECTED_BUILD) expect(manifest.ref).toBe(process.env.RECOVERY_EXPECTED_BUILD)
 const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
 
 async function jobs(page) {
@@ -79,7 +80,9 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
       USERPROFILE: sandbox.root, APPDATA: path.join(sandbox.root,'AppData/Roaming'),
       LOCALAPPDATA: path.join(sandbox.root,'AppData/Local'),
       HTTPS_PROXY: network.proxy, https_proxy: network.proxy,
-      NO_PROXY: '127.0.0.1,localhost', no_proxy: '127.0.0.1,localhost'
+      NO_PROXY: '127.0.0.1,localhost', no_proxy: '127.0.0.1,localhost',
+      ...(inputs.backend === 'cpu' ? {LLAMA_ARG_DEVICE:'none',LLAMA_ARG_N_GPU_LAYERS:'0',
+        LLAMA_ARG_THREADS:'2'} : {})
     })
     for (const key of Object.keys(env)) {
       if (key.startsWith('HERMES_DESKTOP_BOOT_FAKE') || ['HERMES_DESKTOP_DEV_SERVER',
@@ -90,7 +93,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
     writeMockProviderConfig(sandbox.hermesHome, network.origin, undefined,
       `local_runtime:\n  enabled: false\n  backend: ${inputs.backend}\n`)
     writeEnvFile(sandbox.hermesHome, 'e2e-inert-key', network.origin)
-    let app, page
+    let app, page, serverCompleted = false
     const launches = []
     const cleanup = []
     const launch = async () => {
@@ -108,7 +111,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
     const stop = async (final = false) => {
       try {
         if (app) {
-          if (final && page && !page.isClosed()) {
+          if (final && serverCompleted && page && !page.isClosed()) {
             await page.evaluate(() => window.hermesDesktop.api({path:'/api/local-models/server',
               method:'POST',body:{action:'stop'}}))
           }
@@ -196,6 +199,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
         await expect.poll(async () => (await jobs(page)).find(row=>row.job_id===restored.job_id)?.status,
           {timeout:120000,intervals:[500,1000,2000]}).toBe('done')
         const result = probe(env,'complete')
+        serverCompleted = true
         expect(result.model_sha256).toBe(inputs.model_sha256)
         fs.writeFileSync(testInfo.outputPath('native-inference.json'),JSON.stringify(result,null,2))
         await screenshot('completed')

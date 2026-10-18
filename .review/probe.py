@@ -41,7 +41,7 @@ elif action == 'complete':
     engine = binaries.installed_engine(sys.argv[2])
     print(json.dumps({'variant': variant.model_id, 'provider': config['model']['provider'],
         'model_sha256': hashlib.sha256(model.read_bytes()).hexdigest(),
-        'engine': str(engine.binary), 'tag': engine.tag,
+        'engine': str(engine.binary), 'tag': engine.tag, 'backend':engine.backend,
         'response': result['choices'][0]['text'], 'usage': result['usage']}))
 else:
     raise ValueError(action)

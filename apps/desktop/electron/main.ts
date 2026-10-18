@@ -6,7 +6,7 @@ import { closeGatewayTicketBridges, createGatewayTicketResolver } from './local-
 import { createPluginWsUrlHandler } from './plugin-ws-url'
 const localGatewayDials = createLocalGatewayDials()
 configurePythonGatewayTicketClient(createGatewayTicketResolver(
-  async () => ensureRuntime(await resolveHermesBackend([]), () => undefined), resolveHermesCwd))
+  async () => payloadTicketRuntime(await ensureRuntime(await resolveHermesBackend([]), () => undefined), bundledPayload(process.resourcesPath)), resolveHermesCwd))
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import http from 'node:http'
@@ -415,7 +415,7 @@ import {
 import { wireOauthSessionResponse } from './oauth-session-response'
 import { listWindowsProcesses, reapPackageRootedProcesses } from './package-process-reap'
 import { createParentStartMarkerResolver } from './parent-process-identity'
-import { bundledPayload, installIdForRoot, type PayloadInfo, payloadPythonPath } from './payload-backend'
+import { bundledPayload, installIdForRoot, type PayloadInfo, payloadPythonPath, payloadTicketRuntime } from './payload-backend'
 import { petOverlayClickThrough, shouldPopInOnOverlayClosed } from './pet-overlay'
 import { placePetOverlay, registerPetOverlayIpc } from './pet-overlay-ipc'
 import {
