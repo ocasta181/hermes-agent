@@ -21,6 +21,7 @@ const lockPath = path.join(packaged.payload, 'hermes-agent/pm/lock.json')
 const enginePaths = inputs.engine_entries.map(entry=>path.join(packaged.payload,'tools',entry))
 const originalCatalog = fs.readFileSync(catalogPath)
 const originalLock = fs.readFileSync(lockPath)
+const manifest = JSON.parse(fs.readFileSync(path.join(packaged.payload,'manifest.json'),'utf8'))
 const hash = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
 
 async function jobs(page) {
@@ -70,6 +71,7 @@ test.afterAll(() => {
 for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']) {
   test(`packaged native UI: ${scenario}`, async ({}, testInfo) => {
     const sandbox = createSandbox(`native-${scenario}`)
+    fs.writeFileSync(testInfo.outputPath('sandbox.json'),JSON.stringify(sandbox))
     const network = await transport(inputs)
     writeDataFixture(network.origin)
     for (const engine of enginePaths) if (fs.existsSync(engine)) fs.renameSync(engine,engine+'.review-backup')
@@ -89,6 +91,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
     writeEnvFile(sandbox.hermesHome, 'e2e-inert-key', network.origin)
     let app, page
     const launches = []
+    const cleanup = []
     const launch = async () => {
       app = await _electron.launch({ executablePath: packaged.executable,
         args: ['--disable-gpu','--no-sandbox'], env, timeout: 90000 })
@@ -101,12 +104,25 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
       await openSettings(page)
     }
     let trace = 0
-    const stop = async () => {
-      if (app) {
-        await app.context().tracing.stop({path:testInfo.outputPath(`trace-${trace++}.zip`)})
-        await app.close(); app = undefined
+    const stop = async (final = false) => {
+      try {
+        if (app) {
+          if (final && page && !page.isClosed()) {
+            await page.evaluate(() => window.hermesDesktop.api({path:'/api/local-models/server',
+              method:'POST',body:{action:'stop'}}))
+          }
+          await app.context().tracing.stop({path:testInfo.outputPath(`trace-${trace++}.zip`)})
+        }
+      } finally {
+        try {
+          if (app) await app.close()
+        } finally {
+          app = undefined
+          const output = python(env,`import runpy;runpy.run_path(${JSON.stringify(path.join(here,'cleanup.py'))},run_name='__main__')`)
+          cleanup.push(JSON.parse(output.trim().split('\n').at(-1)))
+          fs.writeFileSync(testInfo.outputPath('cleanup.json'),JSON.stringify(cleanup,null,2))
+        }
       }
-      python(env, "sys.argv=['hermes','gateway','stop'];from hermes_cli.main import main;main()")
     }
     const screenshot = async name => {
       await page.screenshot({path:testInfo.outputPath(`${name}.png`)})
@@ -192,11 +208,15 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
       }
       fs.writeFileSync(testInfo.outputPath('result.json'),JSON.stringify({scenario,launches,before,restored,
         requests:network.state.requests,connects:network.state.connects,completedFiles:records,
-        source:process.env.RECOVERY_SOURCE_COMMIT},null,2))
+        source:process.env.RECOVERY_SOURCE_COMMIT,manifest},null,2))
     } finally {
       fs.writeFileSync(testInfo.outputPath('transport.json'),JSON.stringify(network.state,null,2))
       if (page && !page.isClosed()) await page.screenshot({path:testInfo.outputPath('last-state.png')}).catch(()=>{})
-      await stop().catch(error=>fs.writeFileSync(testInfo.outputPath('cleanup-error.log'),String(error)))
+      let cleanupError
+      try { await stop(true) } catch (error) {
+        cleanupError = error
+        fs.writeFileSync(testInfo.outputPath('cleanup-error.log'),String(error))
+      }
       const logs = path.join(sandbox.hermesHome,'logs')
       if (fs.existsSync(logs)) {
         const copied = testInfo.outputPath('backend-logs')
@@ -208,6 +228,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
       }
       await network.close()
       sandbox.cleanup()
+      if (cleanupError) throw cleanupError
     }
   })
 }

@@ -4,46 +4,97 @@ on:
     branches: ['validation/download-recovery-*']
 permissions:
   contents: read
+env:
+  CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+  RECOVERY_SOURCE_COMMIT: 'ae113298c1d300d409ce4bfac8b72cb9f43542e4'
+defaults:
+  run:
+    shell: bash
 jobs:
-  packaged-ui:
-    name: Packaged UI (${{ matrix.os }})
+  prepare:
+    name: Prepare app (${{ matrix.os }})
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         os: [ubuntu-24.04, windows-2025]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 100
-    defaults:
-      run:
-        shell: bash
-    env:
-      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-      RECOVERY_SOURCE_COMMIT: 'ae113298c1d300d409ce4bfac8b72cb9f43542e4'
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7.0.1
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: app
+        with:
+          key: recovery-ui-v1-${{ runner.os }}-${{ env.RECOVERY_SOURCE_COMMIT }}
+          path: |
+            apps/desktop/release
+            node_modules
+            .build/recovery-native-inputs
+            .build/recovery-driver
       - uses: ./.github/actions/setup-pm
-        id: pm
+        if: steps.app.outputs.cache-hit != 'true'
         with:
           toolchain: all
-          extras: '[]'
-          test-environment: 'true'
+      - name: Install display dependencies
+        if: runner.os == 'Linux' && steps.app.outputs.cache-hit != 'true'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1
+      - name: Build the bundled app once, without installer archives
+        if: steps.app.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/recovery-build"
+          "$HERMES_PYTHON" scripts/bundles/desktop.py --commit "$GITHUB_SHA" --variant bundled -- --dir --publish never 2>&1 | tee "$RUNNER_TEMP/recovery-build/build.log"
+      - name: Prepare verified files and the test driver
+        if: steps.app.outputs.cache-hit != 'true'
+        run: '"$HERMES_PYTHON" .review/prepare_runner.py'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: preparation-${{ runner.os }}
+          path: ${{ runner.temp }}/recovery-build
+          retention-days: 3
+          if-no-files-found: ignore
+  behavior:
+    name: UI ${{ matrix.case }} (${{ matrix.os }})
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+        case: [engine-pause-resume, engine-discard, model-resume]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a # v7.0.1
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: recovery-ui-v1-${{ runner.os }}-${{ env.RECOVERY_SOURCE_COMMIT }}
+          fail-on-cache-miss: true
+          path: |
+            apps/desktop/release
+            node_modules
+            .build/recovery-native-inputs
+            .build/recovery-driver
       - name: Install display dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1
-      - name: Recovery behavior tests
-        run: scripts/run_tests.sh tests/pm/test_proxy_recovery.py tests/hermes_cli/test_local_setup_restart.py tests/hermes_cli/test_local_download_recovery.py tests/hermes_cli/test_local_engine_download_recovery.py
-      - name: Build the full bundled app from this commit
+      - name: Test one UI recovery case (expected 1–2 minutes)
+        env:
+          RECOVERY_CASE: ${{ matrix.case }}
+          RECOVERY_SOURCE_ROOT: ${{ github.workspace }}
+          RECOVERY_INPUTS_JSON: ${{ github.workspace }}/.build/recovery-native-inputs/inputs.json
+          RECOVERY_EVIDENCE_ROOT: ${{ runner.temp }}/recovery-evidence
         run: |
-          mkdir -p "$RUNNER_TEMP/recovery-evidence"
-          "$HERMES_PYTHON" scripts/bundles/desktop.py --commit "$GITHUB_SHA" --variant bundled -- --dir --publish never 2>&1 | tee "$RUNNER_TEMP/recovery-evidence/build.log"
-      - name: Click through recovery in the packaged app
-        run: |
-          "$HERMES_PYTHON" .review/run.py --source "$GITHUB_WORKSPACE" --evidence "$RUNNER_TEMP/recovery-evidence" --inputs "$RUNNER_TEMP/recovery-inputs" 2>&1 | tee "$RUNNER_TEMP/recovery-evidence/ui.log"
+          driver=.build/recovery-driver/node
+          if [ "$RUNNER_OS" = Windows ]; then driver+=.exe; fi
+          command=("$driver" node_modules/@playwright/test/cli.js test --config .review/playwright.config.mjs --grep "$RECOVERY_CASE\$")
+          if [ "$RUNNER_OS" = Linux ]; then command=(xvfb-run -a "${command[@]}"); fi
+          "${command[@]}"
       - name: Save screenshots, traces, logs, and native response
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: recovery-${{ runner.os }}-${{ runner.arch }}
+          name: recovery-${{ runner.os }}-${{ matrix.case }}
           path: ${{ runner.temp }}/recovery-evidence
           retention-days: 3
           if-no-files-found: warn
