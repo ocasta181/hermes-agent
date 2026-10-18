@@ -57,8 +57,7 @@ try {
   },null,2))
   if (process.env.RECOVERY_CASE === 'engine-pause-resume') {
     execFileSync(process.execPath,[path.join(root,'node_modules/vitest/vitest.mjs'),'run',
-      '--project','electron','--maxWorkers','1','electron/payload-backend.test.ts',
-      'electron/local-gateway-python-runtime.test.ts'],{cwd:path.join(root,'apps/desktop'),
+      '--config',path.join(root,'.review/unit.config.mjs'),'--maxWorkers','1'],{cwd:root,
       env:{...process.env,HERMES_PYTHON:python},stdio:'inherit',timeout:60000})
   }
 } finally {

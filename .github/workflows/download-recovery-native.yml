@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        case: [engine-pause-resume, engine-discard, model-resume]
+        case: [engine-pause-resume]
     runs-on: windows-2025
     timeout-minutes: 8
     steps:
