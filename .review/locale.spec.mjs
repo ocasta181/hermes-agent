@@ -23,6 +23,7 @@ for(const locale of (process.env.REVIEW_LOCALES??process.env.REVIEW_LOCALE).spli
 const {copy,nav} = JSON.parse(fs.readFileSync(new URL('./copy.json',import.meta.url)))[locale]
 test(`packaged recovery controls: ${locale}`,async({},info)=>{
   const sandbox = createSandbox(`native-locale-${locale}`)
+  fs.writeFileSync(info.outputPath('sandbox.json'),JSON.stringify(sandbox))
   const env = buildAppEnv(sandbox)
   for(const key of Object.keys(env)) if(key.startsWith('HERMES_DESKTOP_BOOT_FAKE') ||
     ['HERMES_DESKTOP_DEV_SERVER','HERMES_DESKTOP_HERMES','HERMES_DESKTOP_HERMES_ROOT',
@@ -118,6 +119,8 @@ print(json.dumps({'first':str(first),'part':str(part),'side':str(side),'model':e
     await app?.close()
     const cleanup=python(env,`import runpy;runpy.run_path(${JSON.stringify(path.join(import.meta.dirname,'cleanup.py'))},run_name='__main__')`)
     fs.writeFileSync(info.outputPath('cleanup.json'),cleanup)
+    const logs=path.join(sandbox.hermesHome,'logs')
+    if(fs.existsSync(logs)) fs.cpSync(logs,info.outputPath('backend-logs'),{recursive:true})
     server.closeAllConnections();await new Promise(resolve=>server.close(resolve))
     sandbox.cleanup()
   }

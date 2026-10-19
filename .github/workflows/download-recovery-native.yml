@@ -1,13 +1,12 @@
 name: Native download recovery UI validation
 on:
   push:
-    branches:
-    - validation/download-recovery-ui-20261019
+    branches: [validation/download-recovery-ui-20261019]
 permissions:
   contents: read
 env:
-  RECOVERY_SOURCE_COMMIT: 41ac23398b91d36b83a36c16489893735d13ddde
-  RECOVERY_EXPECTED_BUILD: 41ac23398b91d36b83a36c16489893735d13ddde
+  RECOVERY_SOURCE_COMMIT: ab8385caa9484993e1aaaa28e438c9cbd50ffc0e
+  RECOVERY_EXPECTED_BUILD: ab8385caa9484993e1aaaa28e438c9cbd50ffc0e
   CSC_IDENTITY_AUTO_DISCOVERY: 'false'
   PYTHON_CPU_COUNT: '2'
   RAYON_NUM_THREADS: '2'
@@ -16,41 +15,16 @@ defaults:
   run:
     shell: bash
 jobs:
-  stop_obsolete_ui_run:
-    name: Stop the obsolete UI-only run
-    if: github.repository == 'ocasta181/hermes-agent'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    permissions:
-      actions: write
-    steps:
-    - name: Cancel only the UI run with the Unix-only test path
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: |
-        node --input-type=module <<'JS'
-        const url = 'https://api.github.com/repos/ocasta181/hermes-agent/actions/runs/39237753197';
-        const headers = {Authorization: `Bearer ${process.env.GH_TOKEN}`, Accept: 'application/vnd.github+json'};
-        const response = await fetch(url, {headers});
-        if (!response.ok) throw new Error(`Cannot inspect owned UI run: ${response.status}`);
-        const run = await response.json();
-        if (run.head_branch !== 'validation/download-recovery-ui-20261019' || run.head_sha !== 'd39f38b73736b72f4f508a9a68246ecb49ab44f6') throw new Error('Unexpected UI run identity');
-        if (run.status !== 'completed') {
-          const cancelled = await fetch(`${url}/cancel`, {method: 'POST', headers});
-          if (cancelled.status !== 202 && cancelled.status !== 409) throw new Error(`UI cancellation failed: ${cancelled.status}`);
-          console.log(`Obsolete UI-only run cancellation: ${cancelled.status}`);
-        } else console.log('Obsolete UI-only run already completed');
-        JS
   native:
     name: Built UI on ${{ matrix.os }}
-    needs: stop_obsolete_ui_run
+    if: github.repository == 'ocasta181/hermes-agent'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 75
+    timeout-minutes: 90
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 2
       matrix:
-        os: [windows-2025]
+        os: [macos-15, ubuntu-24.04, windows-2025]
     steps:
     - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
       with:
@@ -71,11 +45,29 @@ jobs:
       run: |
         git fetch --no-tags --depth=1 origin "$RECOVERY_SOURCE_COMMIT"
         git worktree add --detach "$RUNNER_TEMP/recovery-source" "$RECOVERY_SOURCE_COMMIT"
+    - name: Restore the exact native app build
+      id: app
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+      with:
+        path: ${{ runner.temp }}/recovery-source/apps/desktop/release
+        key: recovery-directory-v1-${{ matrix.os }}-${{ env.RECOVERY_SOURCE_COMMIT }}
     - name: Build the complete bundled app as an unpacked native app
+      if: steps.app.outputs.cache-hit != 'true'
+      id: build
       timeout-minutes: 50
       run: |
         mkdir -p "$RUNNER_TEMP/recovery-build"
         "$HERMES_PYTHON" .review/build_directory.py --source "$RUNNER_TEMP/recovery-source" 2>&1 | tee "$RUNNER_TEMP/recovery-build/build.log"
+    - name: Save the built app before UI checks
+      if: steps.build.outcome == 'success'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+      with:
+        path: ${{ runner.temp }}/recovery-source/apps/desktop/release
+        key: recovery-directory-v1-${{ matrix.os }}-${{ env.RECOVERY_SOURCE_COMMIT }}
+    - name: Install test tools when reusing a cached app
+      if: steps.app.outputs.cache-hit == 'true'
+      working-directory: ${{ runner.temp }}/recovery-source
+      run: npm ci
     - name: Prepare verified model and engine inputs
       id: inputs
       run: |
@@ -92,21 +84,61 @@ jobs:
       timeout-minutes: 5
       run: |
         "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/engine-discard" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case engine-discard --prepared
-    - name: Check TLS proxy failure, app restart, model Resume, and native inference
+    - name: Check TLS failure, app restart, model Resume, and native inference
       if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
       timeout-minutes: 5
       run: |
         "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/model-resume" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case model-resume --prepared
-    - name: Check recovery controls in all nine languages on macOS
+    - name: Prepare the nine localized control checks
       if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
-      timeout-minutes: 5
       env:
         RECOVERY_SOURCE_ROOT: ${{ runner.temp }}/recovery-source
-        RECOVERY_EVIDENCE_ROOT: ${{ runner.temp }}/recovery-evidence
-        REVIEW_LOCALES: en,ar,zh,zh-hant,ja,ru,fr,de,es
+      run: node .review/prepare-locales.mjs
+    - name: Check recovery controls in English
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
       run: |
-        node .review/prepare-locales.mjs
-        node "$RUNNER_TEMP/recovery-source/node_modules/@playwright/test/cli.js" test --config .review/locales.config.mjs
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-en" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale en --prepared
+    - name: Check recovery controls in Arabic
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-ar" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale ar --prepared
+    - name: Check recovery controls in Simplified Chinese
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-zh" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale zh --prepared
+    - name: Check recovery controls in Traditional Chinese
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-zh-hant" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale zh-hant --prepared
+    - name: Check recovery controls in Japanese
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-ja" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale ja --prepared
+    - name: Check recovery controls in Russian
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-ru" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale ru --prepared
+    - name: Check recovery controls in French
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-fr" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale fr --prepared
+    - name: Check recovery controls in German
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-de" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale de --prepared
+    - name: Check recovery controls in Spanish
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/locale-es" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case locale --locale es --prepared
     - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       if: always()
       with:

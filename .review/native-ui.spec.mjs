@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
+import os from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { transport } from './network.mjs'
 import { packagePaths } from './package.mjs'
@@ -166,6 +167,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
       }
       await expect(page.getByRole('button',{name:'Resume',exact:true})).toBeVisible({timeout:60000})
       const before = (await jobs(page)).find(row => row.kind === 'quickstart')
+      fs.writeFileSync(testInfo.outputPath('before-restart.json'),JSON.stringify(before,null,2))
       expect(before.status).toBe('paused')
       const stage = scenario.startsWith('engine') ? 'engine' : 'model'
       expect(before.setup_stage).toBe(stage)
@@ -178,6 +180,7 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
       await launch()
       await expect(page.getByRole('button',{name:'Resume',exact:true})).toBeVisible({timeout:30000})
       const restored = (await jobs(page)).find(row => row.kind === 'quickstart')
+      fs.writeFileSync(testInfo.outputPath('after-restart.json'),JSON.stringify(restored,null,2))
       expect(restored.setup_stage).toBe(stage)
       await expect(page.locator('[aria-current="step"]')).toHaveText(stage === 'engine' ? 'Engine' : 'Model')
       expect(restored.job_id).not.toBe(before.job_id)
@@ -228,6 +231,15 @@ for (const scenario of ['engine-pause-resume', 'engine-discard', 'model-resume']
         requests:network.state.requests,connects:network.state.connects,completedFiles:records,
         source:process.env.RECOVERY_SOURCE_COMMIT,manifest},null,2))
     } finally {
+      fs.writeFileSync(testInfo.outputPath('host-load.json'),JSON.stringify({loadavg:os.loadavg(),cpus:os.cpus().length,freeMemory:os.freemem()}))
+      if (page && !page.isClosed()) {
+        let timer
+        try {
+          const current=await Promise.race([jobs(page),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('jobs snapshot timed out')),5000)})])
+          fs.writeFileSync(testInfo.outputPath('last-jobs.json'),JSON.stringify(current,null,2))
+        } catch(error) {fs.writeFileSync(testInfo.outputPath('last-jobs-error.log'),String(error))}
+        finally {clearTimeout(timer)}
+      }
       fs.writeFileSync(testInfo.outputPath('transport.json'),JSON.stringify(network.state,null,2))
       if (page && !page.isClosed()) await page.screenshot({path:testInfo.outputPath('last-state.png')}).catch(()=>{})
       let cleanupError

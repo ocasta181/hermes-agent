@@ -11,7 +11,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--source', type=Path, required=True)
 parser.add_argument('--evidence', type=Path, required=True)
 parser.add_argument('--inputs', type=Path, required=True)
-parser.add_argument('--case', choices=['engine-pause-resume','engine-discard','model-resume'], required=True)
+parser.add_argument('--case', choices=['engine-pause-resume','engine-discard','model-resume','locale'], required=True)
+parser.add_argument('--locale')
 parser.add_argument('--prepared', action='store_true')
 args = parser.parse_args()
 here = Path(__file__).resolve().parent
@@ -25,6 +26,12 @@ env = dict(os.environ, RECOVERY_SOURCE_ROOT=str(args.source),
 env.setdefault('RECOVERY_SOURCE_COMMIT', subprocess.check_output(['git','rev-parse','HEAD'],cwd=args.source,text=True).strip())
 command = ['node', str(args.source/'node_modules/@playwright/test/cli.js'),
     'test', '--config', str(here/'playwright.config.mjs'), '--grep', args.case + '$']
+if args.case == 'locale':
+    if not args.locale:
+        parser.error('--locale is required for the locale case')
+    env['REVIEW_LOCALES'] = args.locale
+    command = ['node', str(args.source/'node_modules/@playwright/test/cli.js'),
+        'test', '--config', str(here/'locales.config.mjs')]
 if sys.platform.startswith('linux'):
     command = ['xvfb-run','-a',*command]
 process = subprocess.Popen(command, cwd=args.source, env=env, start_new_session=os.name != 'nt')
@@ -41,7 +48,7 @@ finally:
     payload = Path(package['payload'])
     runtime = json.loads((payload/'manifest.json').read_text())['runtime']
     prelude = f'import sys,site,runpy;sys.path.insert(0,{str(payload/runtime["repoDir"])!r});site.addsitedir({str(payload/runtime["sitePackages"])!r});'
-    for receipt in args.evidence.glob('results/**/sandbox.json'):
+    for receipt in args.evidence.glob('**/sandbox.json'):
         sandbox = json.loads(receipt.read_text())
         clean_env = dict(env, HOME=sandbox['root'], HERMES_HOME=sandbox['hermesHome'])
         cleanup = subprocess.run([str(payload/runtime['storePython']), '-I', '-S', '-B', '-c',
