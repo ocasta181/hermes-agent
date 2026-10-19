@@ -1,0 +1,290 @@
+{
+  "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+  "workflow_run": 39245900791,
+  "native": [
+    {
+      "scenario": "engine-discard",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 1048576,
+      "saved_after_restart": 1048576,
+      "setup_stage": "engine",
+      "completed_files_compared": 2,
+      "platform": "Ubuntu 24.04",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "engine-pause-resume",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 1048576,
+      "saved_after_restart": 1048576,
+      "setup_stage": "engine",
+      "inference": {
+        "backend": "cpu",
+        "tag": "b11671",
+        "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+        "completion_tokens": 8
+      },
+      "platform": "Ubuntu 24.04",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "model-resume",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 16760832,
+      "saved_after_restart": 16760832,
+      "setup_stage": "model",
+      "inference": {
+        "backend": "cpu",
+        "tag": "b11671",
+        "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+        "completion_tokens": 8
+      },
+      "platform": "Ubuntu 24.04",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "engine-discard",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 1048576,
+      "saved_after_restart": 1048576,
+      "setup_stage": "engine",
+      "completed_files_compared": 2,
+      "platform": "macOS 15 arm64",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "engine-pause-resume",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 1048576,
+      "saved_after_restart": 1048576,
+      "setup_stage": "engine",
+      "inference": {
+        "backend": "metal",
+        "tag": "b11671",
+        "completion_tokens": 8,
+        "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5"
+      },
+      "platform": "macOS 15 arm64",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "model-resume",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 16760832,
+      "saved_after_restart": 16760832,
+      "setup_stage": "model",
+      "inference": {
+        "backend": "metal",
+        "tag": "b11671",
+        "completion_tokens": 8,
+        "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5"
+      },
+      "platform": "macOS 15 arm64",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "engine-discard",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 1048576,
+      "saved_after_restart": 1048576,
+      "setup_stage": "engine",
+      "completed_files_compared": 2,
+      "platform": "Windows Server 2025",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "engine-pause-resume",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 1048576,
+      "saved_after_restart": 1048576,
+      "setup_stage": "engine",
+      "inference": {
+        "backend": "cpu",
+        "tag": "b11671",
+        "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+        "completion_tokens": 8
+      },
+      "platform": "Windows Server 2025",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "scenario": "model-resume",
+      "source": "ab8385caa9484993e1aaaa28e438c9cbd50ffc0e",
+      "saved_before": 15712256,
+      "saved_after_restart": 15712256,
+      "setup_stage": "model",
+      "inference": {
+        "backend": "cpu",
+        "tag": "b11671",
+        "model_sha256": "e3131339bf4e8065265593d4fd8f7bb7ff2d3abff1edb5618aa1197b89cad9f5",
+        "completion_tokens": 8
+      },
+      "platform": "Windows Server 2025",
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    }
+  ],
+  "languages": [
+    {
+      "locale": "ar",
+      "direction": "rtl",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "de",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "en",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "es",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "fr",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "ja",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "ru",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "zh",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    },
+    {
+      "locale": "zh-hant",
+      "direction": "ltr",
+      "checks": [
+        "restored progress",
+        "localized recovery explanation",
+        "Resume reaches HTTP 503",
+        "localized retry status",
+        "Pause retains recovery controls",
+        "localized Discard tooltip",
+        "visible unclipped recovery buttons",
+        "Discard removes partial files",
+        "Discard preserves completed file and mtime"
+      ],
+      "result": "passed",
+      "cleanup_remaining_processes": 0
+    }
+  ]
+}
