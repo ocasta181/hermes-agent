@@ -1,4 +1,4 @@
-name: Session schema timeout repair validation
+name: Windows Git baseline diagnosis
 on:
   push:
     branches: ['validation/download-recovery-baseline-20261019']
@@ -7,41 +7,52 @@ permissions:
 env:
   PYTHON_CPU_COUNT: '2'
   RAYON_NUM_THREADS: '2'
-  NODE_OPTIONS: '--max-old-space-size=4096'
 defaults:
   run:
     shell: bash
 jobs:
-  browse:
-    name: Session schema timeout repair (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+  windows_git:
+    name: Windows Git tests on unchanged main
+    runs-on: windows-2025
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        os: [macos-15, ubuntu-24.04]
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
+        with:
+          ref: '2e83e2a935ee04f606aab58e498d34ca58d84c07'
       - uses: ./.github/actions/setup-pm
         with:
-          packages: ripgrep
+          packages: git,ripgrep
           extras: '["all", "telegram", "anthropic", "mistral", "fal", "modal", "daytona", "parallel-web"]'
           test-environment: 'true'
           prune-python-cache: true
-      - name: Check the affected schema-recovery test file
+      - name: Record installed Git layouts
+        run: |
+          mkdir -p "$RUNNER_TEMP/git-baseline"
+          git rev-parse HEAD > "$RUNNER_TEMP/git-baseline/revision.txt"
+          "$HERMES_PYTHON" - <<'PY' | tee "$RUNNER_TEMP/git-baseline/git-layout.json"
+          import json, pathlib, shutil, subprocess
+          locations = ["mingw64/libexec/git-core/git.exe", "mingw64/bin/git.exe", "cmd/git.exe", "bin/git.exe"]
+          rows = []
+          for relative in locations:
+              path = pathlib.Path("C:/Program Files/Git") / relative
+              row = {"path": str(path), "exists": path.exists()}
+              if path.exists():
+                  probe = subprocess.run([str(path), "--version"], capture_output=True, text=True, timeout=15)
+                  row.update(returncode=probe.returncode, stdout=probe.stdout.strip(), stderr=probe.stderr.strip())
+              rows.append(row)
+          print(json.dumps({"path_git": shutil.which("git"), "installed": rows}, indent=2))
+          PY
+      - name: Check the same five live Git cases on main
         timeout-minutes: 5
         env:
           HERMES_TEST_WORKERS: '1'
-          HERMES_TEST_FILE_TIMEOUT: '240'
+          HERMES_TEST_FILE_TIMEOUT: '120'
         run: |
-          mkdir -p "$RUNNER_TEMP/baseline-comparison"
-          git rev-parse HEAD > "$RUNNER_TEMP/baseline-comparison/revision.txt"
-          /bin/bash scripts/run_tests.sh --files tests/hermes_cli/test_browse_schema_drift.py -- -v --tb=short 2>&1 | tee "$RUNNER_TEMP/baseline-comparison/result.log"
+          /bin/bash scripts/run_tests.sh --files tests/hermes_cli/test_git_trampoline_windows_live.py -- -v --tb=short 2>&1 | tee "$RUNNER_TEMP/git-baseline/result.log"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: browse-repair-${{ matrix.os }}
-          path: ${{ runner.temp }}/baseline-comparison
+          name: windows-git-baseline
+          path: ${{ runner.temp }}/git-baseline
           retention-days: 7
 
