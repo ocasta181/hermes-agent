@@ -1,4 +1,4 @@
-name: Windows Git baseline diagnosis
+name: Desktop workspace recovery follow-up
 on:
   push:
     branches: ['validation/download-recovery-baseline-20261019']
@@ -7,52 +7,56 @@ permissions:
 env:
   PYTHON_CPU_COUNT: '2'
   RAYON_NUM_THREADS: '2'
+  NODE_OPTIONS: '--max-old-space-size=4096'
 defaults:
   run:
     shell: bash
 jobs:
-  windows_git:
-    name: Windows Git tests on unchanged main
-    runs-on: windows-2025
-    timeout-minutes: 20
+  electron:
+    name: Desktop Electron checks (${{ matrix.label }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - label: main-focused
+            revision: '2e83e2a935ee04f606aab58e498d34ca58d84c07'
+            scope: focused
+          - label: candidate-full
+            revision: '33e72bd67bfd30857c70ac5af9a432943b95e1db'
+            scope: full
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
         with:
-          ref: '2e83e2a935ee04f606aab58e498d34ca58d84c07'
+          ref: ${{ matrix.revision }}
       - uses: ./.github/actions/setup-pm
         with:
-          packages: git,ripgrep
-          extras: '["all", "telegram", "anthropic", "mistral", "fal", "modal", "daytona", "parallel-web"]'
+          toolchain: all
+          extras: '[]'
           test-environment: 'true'
-          prune-python-cache: true
-      - name: Record installed Git layouts
-        run: |
-          mkdir -p "$RUNNER_TEMP/git-baseline"
-          git rev-parse HEAD > "$RUNNER_TEMP/git-baseline/revision.txt"
-          "$HERMES_PYTHON" - <<'PY' | tee "$RUNNER_TEMP/git-baseline/git-layout.json"
-          import json, pathlib, shutil, subprocess
-          locations = ["mingw64/libexec/git-core/git.exe", "mingw64/bin/git.exe", "cmd/git.exe", "bin/git.exe"]
-          rows = []
-          for relative in locations:
-              path = pathlib.Path("C:/Program Files/Git") / relative
-              row = {"path": str(path), "exists": path.exists()}
-              if path.exists():
-                  probe = subprocess.run([str(path), "--version"], capture_output=True, text=True, timeout=15)
-                  row.update(returncode=probe.returncode, stdout=probe.stdout.strip(), stderr=probe.stderr.strip())
-              rows.append(row)
-          print(json.dumps({"path_git": shutil.which("git"), "installed": rows}, indent=2))
-          PY
-      - name: Check the same five live Git cases on main
-        timeout-minutes: 5
+      - name: Install the same display dependencies as the full workspace run
+        run: sudo apt-get update && sudo apt-get install -y zsh xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libdrm2 libgbm1 libasound2t64
+      - name: Install the locked workspaces
+        run: npm ci
+      - name: Check catalog and portal behavior without competing Electron workers
+        timeout-minutes: 15
         env:
-          HERMES_TEST_WORKERS: '1'
-          HERMES_TEST_FILE_TIMEOUT: '120'
+          CHECK_SCOPE: ${{ matrix.scope }}
         run: |
-          /bin/bash scripts/run_tests.sh --files tests/hermes_cli/test_git_trampoline_windows_live.py -- -v --tb=short 2>&1 | tee "$RUNNER_TEMP/git-baseline/result.log"
+          mkdir -p "$RUNNER_TEMP/electron-followup"
+          git rev-parse HEAD > "$RUNNER_TEMP/electron-followup/revision.txt"
+          if [[ "$CHECK_SCOPE" == full ]]; then
+            xvfb-run -a npm run test:desktop:platforms --workspace apps/desktop -- --maxWorkers=1 2>&1 | tee "$RUNNER_TEMP/electron-followup/results.log"
+          else
+            cd apps/desktop
+            xvfb-run -a node ../../node_modules/vitest/vitest.mjs run --project electron --maxWorkers=1 scripts/i18n-keys.test.mjs electron/portal-session-live.test.ts 2>&1 | tee "$RUNNER_TEMP/electron-followup/results.log"
+          fi
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: windows-git-baseline
-          path: ${{ runner.temp }}/git-baseline
+          name: recovery-electron-${{ matrix.label }}
+          path: ${{ runner.temp }}/electron-followup
           retention-days: 7
 
