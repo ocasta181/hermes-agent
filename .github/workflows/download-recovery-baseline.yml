@@ -1,4 +1,4 @@
-name: Desktop virtual display follow-up
+name: Desktop recovery candidate checks
 on:
   push:
     branches: ['validation/download-recovery-baseline-20261019']
@@ -12,53 +12,39 @@ defaults:
   run:
     shell: bash
 jobs:
-  electron:
-    name: Desktop Electron with accessible virtual display (${{ matrix.label }})
+  desktop:
+    name: Required desktop checks at ab8385caa9
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
-    strategy:
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        include:
-          - label: main-focused
-            revision: '2e83e2a935ee04f606aab58e498d34ca58d84c07'
-            scope: focused
-          - label: candidate-full
-            revision: '33e72bd67bfd30857c70ac5af9a432943b95e1db'
-            scope: full
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
         with:
-          ref: ${{ matrix.revision }}
+          ref: ab8385caa9484993e1aaaa28e438c9cbd50ffc0e
       - uses: ./.github/actions/setup-pm
         with:
           toolchain: all
           extras: '[]'
-          test-environment: 'true'
-      - name: Install display dependencies
-        run: sudo apt-get update && sudo apt-get install -y zsh xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libdrm2 libgbm1 libasound2t64
       - name: Install the locked workspaces
         run: npm ci
-      - name: Check unchanged assertions with usable virtual-display access
-        timeout-minutes: 15
-        env:
-          CHECK_SCOPE: ${{ matrix.scope }}
+      - name: Record candidate source
         run: |
-          mkdir -p "$RUNNER_TEMP/electron-followup"
-          git rev-parse HEAD > "$RUNNER_TEMP/electron-followup/revision.txt"
-          # This disposable display is local to the hosted runner. The existing
-          # portal fixture filters XAUTHORITY from its child environment.
-          if [[ "$CHECK_SCOPE" == full ]]; then
-            xvfb-run -a -s '-screen 0 1280x1024x24 -ac' npm run test:desktop:platforms --workspace apps/desktop -- --maxWorkers=1 2>&1 | tee "$RUNNER_TEMP/electron-followup/results.log"
-          else
-            cd apps/desktop
-            xvfb-run -a -s '-screen 0 1280x1024x24 -ac' node ../../node_modules/vitest/vitest.mjs run --project electron --maxWorkers=1 scripts/i18n-keys.test.mjs electron/portal-session-live.test.ts 2>&1 | tee "$RUNNER_TEMP/electron-followup/results.log"
-          fi
+          mkdir -p "$RUNNER_TEMP/desktop-followup"
+          git rev-parse HEAD > "$RUNNER_TEMP/desktop-followup/revision.txt"
+          test "$(git rev-parse HEAD)" = ab8385caa9484993e1aaaa28e438c9cbd50ffc0e
+      - name: Run required desktop type and lint checks
+        timeout-minutes: 5
+        run: npm run check:lint --workspace apps/desktop 2>&1 | tee "$RUNNER_TEMP/desktop-followup/lint.log"
+      - name: Run the complete required desktop UI unit suite
+        if: ${{ !cancelled() }}
+        timeout-minutes: 30
+        run: npm run test:ui --workspace apps/desktop -- --maxWorkers=2 2>&1 | tee "$RUNNER_TEMP/desktop-followup/ui.log"
+      - name: Check source custody
+        if: ${{ !cancelled() }}
+        run: git diff --exit-code
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: recovery-electron-display-${{ matrix.label }}
-          path: ${{ runner.temp }}/electron-followup
+          name: recovery-desktop-ab8385caa9
+          path: ${{ runner.temp }}/desktop-followup
           retention-days: 7
 
