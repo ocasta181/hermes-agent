@@ -1,0 +1,57 @@
+name: Required Python suite continuation
+on:
+  push:
+    branches: ['validation/download-recovery-python-tail-20261019']
+permissions:
+  contents: read
+env:
+  RECOVERY_SOURCE_COMMIT: 'ab8385caa9484993e1aaaa28e438c9cbd50ffc0e'
+  PYTHON_CPU_COUNT: '2'
+  RAYON_NUM_THREADS: '2'
+defaults:
+  run:
+    shell: bash
+jobs:
+  remaining:
+    name: Remaining 386 required Python files
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
+      - name: Preserve the exact unfinished inventory
+        run: |
+          cp .github/validation/download-recovery-python-tail.txt "$RUNNER_TEMP/remaining-python-files.txt"
+          printf '%s  %s\n' '6f198c1985ebc1bad7f61cacf1b7b6d5ce69f0918580a394ef07ae45dfe37dfb' "$RUNNER_TEMP/remaining-python-files.txt" | sha256sum -c -
+          test "$(wc -l < "$RUNNER_TEMP/remaining-python-files.txt")" -eq 386
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
+        with:
+          ref: ${{ env.RECOVERY_SOURCE_COMMIT }}
+      - uses: ./.github/actions/setup-pm
+        with:
+          packages: ripgrep
+          extras: '["all", "anthropic", "bedrock", "mistral", "fal", "modal", "daytona", "parallel-web"]'
+          test-environment: 'true'
+          prune-python-cache: true
+      - name: Run only files without completed receipts
+        env:
+          HERMES_TEST_WORKERS: '2'
+          HERMES_TEST_FILE_TIMEOUT: '600'
+        run: |
+          mkdir -p "$RUNNER_TEMP/recovery-tail"
+          cp "$RUNNER_TEMP/remaining-python-files.txt" "$RUNNER_TEMP/recovery-tail/selected.txt"
+          git rev-parse HEAD | tee "$RUNNER_TEMP/recovery-tail/source.txt"
+          test "$(git rev-parse HEAD)" = "$RECOVERY_SOURCE_COMMIT"
+          /bin/bash scripts/run_tests.sh --files-from "$RUNNER_TEMP/remaining-python-files.txt" 2>&1 | tee "$RUNNER_TEMP/recovery-tail/required-suite-tail.log"
+      - name: Record source and fixture residue
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/recovery-tail"
+          git status --porcelain=v1 | tee "$RUNNER_TEMP/recovery-tail/source-status.txt"
+          git diff --exit-code HEAD
+          git diff --cached --exit-code
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: recovery-required-python-tail
+          path: ${{ runner.temp }}/recovery-tail
+          retention-days: 7
