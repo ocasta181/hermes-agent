@@ -16,15 +16,41 @@ defaults:
   run:
     shell: bash
 jobs:
+  stop_obsolete_ui_run:
+    name: Stop the obsolete UI-only run
+    if: github.repository == 'ocasta181/hermes-agent'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      actions: write
+    steps:
+    - name: Cancel only the UI run with the Unix-only test path
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        node --input-type=module <<'JS'
+        const url = 'https://api.github.com/repos/ocasta181/hermes-agent/actions/runs/39237753197';
+        const headers = {Authorization: `Bearer ${process.env.GH_TOKEN}`, Accept: 'application/vnd.github+json'};
+        const response = await fetch(url, {headers});
+        if (!response.ok) throw new Error(`Cannot inspect owned UI run: ${response.status}`);
+        const run = await response.json();
+        if (run.head_branch !== 'validation/download-recovery-ui-20261019' || run.head_sha !== 'd39f38b73736b72f4f508a9a68246ecb49ab44f6') throw new Error('Unexpected UI run identity');
+        if (run.status !== 'completed') {
+          const cancelled = await fetch(`${url}/cancel`, {method: 'POST', headers});
+          if (cancelled.status !== 202 && cancelled.status !== 409) throw new Error(`UI cancellation failed: ${cancelled.status}`);
+          console.log(`Obsolete UI-only run cancellation: ${cancelled.status}`);
+        } else console.log('Obsolete UI-only run already completed');
+        JS
   native:
     name: Built UI on ${{ matrix.os }}
+    needs: stop_obsolete_ui_run
     runs-on: ${{ matrix.os }}
     timeout-minutes: 75
     strategy:
       fail-fast: false
       max-parallel: 1
       matrix:
-        os: [ubuntu-24.04, windows-2025, macos-15]
+        os: [windows-2025]
     steps:
     - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
       with:
@@ -32,6 +58,12 @@ jobs:
     - uses: ./.github/actions/setup-pm
       with:
         toolchain: all
+    - name: Verify the certificate tool before building
+      run: |
+        recovery_openssl="$(command -v openssl)"
+        if [[ "$RUNNER_OS" == Windows ]]; then recovery_openssl="$(cygpath -w "$recovery_openssl")"; fi
+        printf 'RECOVERY_OPENSSL=%s\n' "$recovery_openssl" >> "$GITHUB_ENV"
+        RECOVERY_OPENSSL="$recovery_openssl" node -e 'require("node:child_process").execFileSync(process.env.RECOVERY_OPENSSL,["version"],{stdio:"inherit"})'
     - name: Install Linux display dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1

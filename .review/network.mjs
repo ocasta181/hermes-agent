@@ -31,7 +31,7 @@ subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer
 subjectAltName=DNS:huggingface.co,DNS:us.aws.cdn.hf.co
 `)
-  const openssl=args=>execFileSync('/usr/bin/openssl',args,{cwd:tls,stdio:'ignore'})
+  const openssl=args=>execFileSync(process.env.RECOVERY_OPENSSL ?? 'openssl',args,{cwd:tls,stdio:'ignore'})
   openssl(['req','-x509','-newkey','rsa:2048','-nodes','-sha256','-days','1','-config','ca.cnf','-keyout','ca.key','-out','ca.pem'])
   openssl(['req','-new','-newkey','rsa:2048','-nodes','-sha256','-subj','/CN=huggingface.co','-keyout','leaf.key','-out','leaf.csr'])
   openssl(['x509','-req','-in','leaf.csr','-CA','ca.pem','-CAkey','ca.key','-CAcreateserial','-days','1','-sha256','-extfile','leaf.cnf','-out','leaf.pem'])
