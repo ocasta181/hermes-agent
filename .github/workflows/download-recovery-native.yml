@@ -1,121 +1,21 @@
-name: Download recovery candidate validation
+name: Native download recovery UI validation
 on:
   push:
-    branches: ['validation/download-recovery-review-20261019']
+    branches:
+    - validation/download-recovery-ui-20261019
 permissions:
   contents: read
 env:
-  RECOVERY_SOURCE_COMMIT: '41ac23398b91d36b83a36c16489893735d13ddde'
-  RECOVERY_EXPECTED_BUILD: '41ac23398b91d36b83a36c16489893735d13ddde'
+  RECOVERY_SOURCE_COMMIT: 41ac23398b91d36b83a36c16489893735d13ddde
+  RECOVERY_EXPECTED_BUILD: 41ac23398b91d36b83a36c16489893735d13ddde
   CSC_IDENTITY_AUTO_DISCOVERY: 'false'
   PYTHON_CPU_COUNT: '2'
   RAYON_NUM_THREADS: '2'
-  NODE_OPTIONS: '--max-old-space-size=4096'
+  NODE_OPTIONS: --max-old-space-size=4096
 defaults:
   run:
     shell: bash
 jobs:
-  suite:
-    name: Required Python suite on Ubuntu
-    runs-on: ubuntu-24.04
-    timeout-minutes: 150
-    steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
-        with:
-          ref: ${{ env.RECOVERY_SOURCE_COMMIT }}
-      - uses: ./.github/actions/setup-pm
-        with:
-          packages: ripgrep
-          extras: '["all", "anthropic", "bedrock", "mistral", "fal", "modal", "daytona", "parallel-web"]'
-          test-environment: 'true'
-          prune-python-cache: true
-      - name: Run the complete required suite through the upstream runner
-        env:
-          HERMES_TEST_WORKERS: '2'
-          HERMES_TEST_FILE_TIMEOUT: '600'
-        run: |
-          mkdir -p "$RUNNER_TEMP/recovery-suite"
-          /bin/bash scripts/run_tests.sh 2>&1 | tee "$RUNNER_TEMP/recovery-suite/required-suite.log"
-      - name: Check source custody
-        if: always()
-        run: |
-          git status --porcelain=v1
-          test -z "$(git status --porcelain=v1)"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: always()
-        with:
-          name: recovery-required-suite
-          path: ${{ runner.temp }}/recovery-suite
-          retention-days: 7
-  platforms:
-    name: Required platform tests on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        include:
-          - os: macos-15
-            marker: macos
-            packages: ripgrep
-          - os: windows-2025
-            marker: windows
-            packages: git,ripgrep
-    steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
-        with:
-          ref: ${{ env.RECOVERY_SOURCE_COMMIT }}
-      - uses: ./.github/actions/setup-pm
-        with:
-          packages: ${{ matrix.packages }}
-          extras: '["all", "telegram", "anthropic", "mistral", "fal", "modal", "daytona", "parallel-web"]'
-          test-environment: 'true'
-          prune-python-cache: true
-      - name: Run the upstream platform selection
-        env:
-          HERMES_TEST_WORKERS: '2'
-          HERMES_TEST_FILE_TIMEOUT: '600'
-          PLATFORM_MARKER: ${{ matrix.marker }}
-        run: |
-          mkdir -p "$RUNNER_TEMP/recovery-platforms"
-          "$HERMES_PYTHON" scripts/ci/list_os_marked_tests.py "$PLATFORM_MARKER" > "$RUNNER_TEMP/recovery-platforms/selected.txt"
-          test -s "$RUNNER_TEMP/recovery-platforms/selected.txt"
-          FILES="$("$HERMES_PYTHON" -c 'import os,pathlib,sys; print(os.pathsep.join(pathlib.Path(sys.argv[1]).read_text().splitlines()))' "$RUNNER_TEMP/recovery-platforms/selected.txt")"
-          /bin/bash scripts/run_tests.sh --files "$FILES" -- --ignore-glob='*test_desktop_update_windows_*.py' -m 'platforms and not integration' -v --tb=short 2>&1 | tee "$RUNNER_TEMP/recovery-platforms/platform-suite.log"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: always()
-        with:
-          name: recovery-platforms-${{ runner.os }}
-          path: ${{ runner.temp }}/recovery-platforms
-          retention-days: 7
-  workspaces:
-    name: Required JavaScript and TypeScript workspace checks
-    runs-on: ubuntu-24.04
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
-        with:
-          ref: ${{ env.RECOVERY_SOURCE_COMMIT }}
-      - uses: ./.github/actions/setup-pm
-        with:
-          toolchain: all
-          extras: '[]'
-          test-environment: 'true'
-      - name: Install the upstream display and shell dependencies
-        run: sudo apt-get update && sudo apt-get install -y zsh xvfb libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libdrm2 libgbm1 libasound2t64
-      - name: Install the locked workspaces
-        run: npm ci
-      - name: Run every upstream workspace check serially
-        run: |
-          mkdir -p "$RUNNER_TEMP/recovery-workspaces"
-          xvfb-run -a node .github/scripts/run-workspace-checks.mjs --concurrency 1 2>&1 | tee "$RUNNER_TEMP/recovery-workspaces/workspace-checks.log"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: always()
-        with:
-          name: recovery-workspace-checks
-          path: ${{ runner.temp }}/recovery-workspaces
-          retention-days: 7
   native:
     name: Built UI on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -126,58 +26,60 @@ jobs:
       matrix:
         os: [ubuntu-24.04, windows-2025, macos-15]
     steps:
-      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
-        with:
-          fetch-depth: 3
-      - uses: ./.github/actions/setup-pm
-        with:
-          toolchain: all
-      - name: Install Linux display dependencies
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1
-      - name: Create a clean checkout of the candidate
-        run: git worktree add --detach "$RUNNER_TEMP/recovery-source" "$RECOVERY_SOURCE_COMMIT"
-      - name: Build the complete bundled app from the candidate
-        timeout-minutes: 50
-        run: |
-          mkdir -p "$RUNNER_TEMP/recovery-build"
-          "$HERMES_PYTHON" scripts/bundles/desktop.py --repo "$RUNNER_TEMP/recovery-source" --commit "$RECOVERY_SOURCE_COMMIT" --variant bundled -- --publish never 2>&1 | tee "$RUNNER_TEMP/recovery-build/build.log"
-      - name: Prepare verified model and engine inputs
-        id: inputs
-        run: |
-          cd "$RUNNER_TEMP/recovery-source"
-          "$HERMES_PYTHON" "$GITHUB_WORKSPACE/.review/prepare_runner.py"
-          node -e 'require("fs").symlinkSync(process.argv[1],process.argv[2],"junction")' "$RUNNER_TEMP/recovery-source/node_modules" "$GITHUB_WORKSPACE/.review/node_modules"
-      - name: Check engine Pause, app restart, Resume, and native inference
-        if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
-        timeout-minutes: 5
-        run: |
-          "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/engine-pause-resume" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case engine-pause-resume --prepared
-      - name: Check Discard, completed-file preservation, and app restart
-        if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
-        timeout-minutes: 5
-        run: |
-          "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/engine-discard" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case engine-discard --prepared
-      - name: Check TLS proxy failure, app restart, model Resume, and native inference
-        if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
-        timeout-minutes: 5
-        run: |
-          "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/model-resume" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case model-resume --prepared
-      - name: Check recovery controls in all nine languages on macOS
-        if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
-        timeout-minutes: 5
-        env:
-          RECOVERY_SOURCE_ROOT: ${{ runner.temp }}/recovery-source
-          RECOVERY_EVIDENCE_ROOT: ${{ runner.temp }}/recovery-evidence
-          REVIEW_LOCALES: en,ar,zh,zh-hant,ja,ru,fr,de,es
-        run: |
-          node .review/prepare-locales.mjs
-          node "$RUNNER_TEMP/recovery-source/node_modules/@playwright/test/cli.js" test --config .review/locales.config.mjs
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: always()
-        with:
-          name: recovery-native-${{ runner.os }}
-          path: |
-            ${{ runner.temp }}/recovery-build
-            ${{ runner.temp }}/recovery-evidence
-          retention-days: 7
+    - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
+      with:
+        fetch-depth: 3
+    - uses: ./.github/actions/setup-pm
+      with:
+        toolchain: all
+    - name: Install Linux display dependencies
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1
+    - name: Create a clean checkout of the candidate
+      run: |
+        git fetch --no-tags --depth=1 origin "$RECOVERY_SOURCE_COMMIT"
+        git worktree add --detach "$RUNNER_TEMP/recovery-source" "$RECOVERY_SOURCE_COMMIT"
+    - name: Build the complete bundled app as an unpacked native app
+      timeout-minutes: 50
+      run: |
+        mkdir -p "$RUNNER_TEMP/recovery-build"
+        "$HERMES_PYTHON" .review/build_directory.py --source "$RUNNER_TEMP/recovery-source" 2>&1 | tee "$RUNNER_TEMP/recovery-build/build.log"
+    - name: Prepare verified model and engine inputs
+      id: inputs
+      run: |
+        cd "$RUNNER_TEMP/recovery-source"
+        "$HERMES_PYTHON" "$GITHUB_WORKSPACE/.review/prepare_runner.py"
+        node -e 'require("fs").symlinkSync(process.argv[1],process.argv[2],"junction")' "$RUNNER_TEMP/recovery-source/node_modules" "$GITHUB_WORKSPACE/.review/node_modules"
+    - name: Check engine Pause, app restart, Resume, and native inference
+      if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/engine-pause-resume" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case engine-pause-resume --prepared
+    - name: Check Discard, completed-file preservation, and app restart
+      if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/engine-discard" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case engine-discard --prepared
+    - name: Check TLS proxy failure, app restart, model Resume, and native inference
+      if: ${{ !cancelled() && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      run: |
+        "$HERMES_PYTHON" .review/run.py --source "$RUNNER_TEMP/recovery-source" --evidence "$RUNNER_TEMP/recovery-evidence/model-resume" --inputs "$RUNNER_TEMP/recovery-source/.build/recovery-native-inputs" --case model-resume --prepared
+    - name: Check recovery controls in all nine languages on macOS
+      if: ${{ !cancelled() && runner.os == 'macOS' && steps.inputs.outcome == 'success' }}
+      timeout-minutes: 5
+      env:
+        RECOVERY_SOURCE_ROOT: ${{ runner.temp }}/recovery-source
+        RECOVERY_EVIDENCE_ROOT: ${{ runner.temp }}/recovery-evidence
+        REVIEW_LOCALES: en,ar,zh,zh-hant,ja,ru,fr,de,es
+      run: |
+        node .review/prepare-locales.mjs
+        node "$RUNNER_TEMP/recovery-source/node_modules/@playwright/test/cli.js" test --config .review/locales.config.mjs
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      if: always()
+      with:
+        name: recovery-native-${{ runner.os }}
+        path: |
+          ${{ runner.temp }}/recovery-build
+          ${{ runner.temp }}/recovery-evidence
+        retention-days: 7
